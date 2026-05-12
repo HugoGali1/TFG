@@ -1,0 +1,216 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="admin-toolbar">
+    <ion-title>
+      <span class="admin-title font-serif">Brasa &amp; Ascuas · Admin</span>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="tab-toolbar">
+    <div class="tab-buttons">
+      <button class="tab-btn" [class.active]="activeTab === 'tables'" (click)="setTab('tables')">
+        <ion-icon name="grid-outline"></ion-icon>
+        Mesas
+        <span class="tab-badge" *ngIf="tables.length">{{ tables.length }}</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'menu'" (click)="setTab('menu')">
+        <ion-icon name="restaurant-outline"></ion-icon>
+        Carta
+        <span class="tab-badge" *ngIf="items.length">{{ items.length }}</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'buffets'" (click)="setTab('buffets')">
+        <ion-icon name="flame-outline"></ion-icon>
+        Buffets
+        <span class="tab-badge" *ngIf="buffets.length">{{ buffets.length }}</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'stats'" (click)="setTab('stats')">
+        <ion-icon name="stats-chart-outline"></ion-icon>
+        Métricas
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="admin-content">
+
+  <!-- ============ MESAS ============ -->
+  <ng-container *ngIf="activeTab === 'tables'">
+    <div class="section-actions">
+      <button class="btn-primary-pill" (click)="addTable()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        Nueva mesa
+      </button>
+    </div>
+
+    <div class="rows-list">
+      <div *ngFor="let t of tables" class="data-row">
+        <div class="dr-icon table-num">{{ t.number }}</div>
+        <div class="dr-body">
+          <div class="dr-title">Mesa {{ t.number }}</div>
+          <div class="dr-meta">
+            <span class="status-pill" [ngClass]="t.status">{{ statusLabel(t.status) }}</span>
+            · {{ t.capacity }} pers. · {{ t.zone }}
+          </div>
+        </div>
+        <div class="dr-actions">
+          <button class="icon-btn" (click)="copyQrUrl(t)" title="Copiar URL del QR">
+            <ion-icon name="qr-code-outline"></ion-icon>
+          </button>
+          <button class="icon-btn danger" (click)="deleteTable(t)" title="Eliminar">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="tables.length === 0" class="empty">Sin mesas. Crea la primera.</div>
+  </ng-container>
+
+  <!-- ============ PLATOS ============ -->
+  <ng-container *ngIf="activeTab === 'menu'">
+    <div class="section-actions filter-row">
+      <button
+        class="filter-pill"
+        [class.active]="selectedCategoryFilter === ''"
+        (click)="selectedCategoryFilter = ''"
+      >Todos</button>
+      <button
+        *ngFor="let c of categories"
+        class="filter-pill"
+        [class.active]="selectedCategoryFilter === c._id"
+        (click)="selectedCategoryFilter = c._id"
+      >{{ c.icon }} {{ c.name }}</button>
+    </div>
+
+    <div class="rows-list">
+      <div *ngFor="let item of filteredItems" class="data-row" [class.unavailable]="!item.isAvailable">
+        <img *ngIf="item.imageUrl" [src]="item.imageUrl" class="dr-thumb" loading="lazy">
+        <div *ngIf="!item.imageUrl" class="dr-icon">🍽️</div>
+        <div class="dr-body">
+          <div class="dr-title">{{ item.name }}</div>
+          <div class="dr-meta">{{ categoryName(item) }} · {{ item.cookingTimeMinutes }} min</div>
+        </div>
+        <div class="price-pill" (click)="editItemPrice(item)">
+          {{ item.price | currency:'EUR' }}
+          <ion-icon name="create-outline"></ion-icon>
+        </div>
+        <div class="dr-actions">
+          <button class="icon-btn" [class.toggle-on]="item.isAvailable" (click)="toggleAvailable(item)" title="Disponible / Agotado">
+            <ion-icon [name]="item.isAvailable ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+          </button>
+          <button class="icon-btn danger" (click)="deleteItem(item)" title="Eliminar">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredItems.length === 0" class="empty">Sin platos en esta categoría.</div>
+  </ng-container>
+
+  <!-- ============ BUFFETS ============ -->
+  <ng-container *ngIf="activeTab === 'buffets'">
+    <div class="rows-list">
+      <div *ngFor="let b of buffets" class="data-row">
+        <div class="dr-icon">{{ b.icon }}</div>
+        <div class="dr-body">
+          <div class="dr-title">{{ b.name }}</div>
+          <div class="dr-meta">{{ catNames(b) }}</div>
+          <div class="dr-desc" *ngIf="b.description">{{ b.description }}</div>
+        </div>
+        <div class="price-pill primary" (click)="editBuffetPrice(b)">
+          {{ b.pricePerPerson | currency:'EUR' }}<small>/pers.</small>
+          <ion-icon name="create-outline"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="hint-block">
+      Las categorías incluidas en cada buffet se gestionan en BBDD. La interfaz de edición avanzada queda fuera del MVP.
+    </div>
+  </ng-container>
+
+  <!-- ============ STATS ============ -->
+  <ng-container *ngIf="activeTab === 'stats'">
+    <div *ngIf="!stats" class="empty">Cargando métricas…</div>
+
+    <ng-container *ngIf="stats">
+      <!-- KPI cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-value font-serif">{{ stats.todayOrders }}</div>
+          <div class="kpi-label">Pedidos hoy</div>
+        </div>
+        <div class="kpi-card primary">
+          <div class="kpi-value font-serif">{{ stats.todayRevenue | currency:'EUR' }}</div>
+          <div class="kpi-label">Ingresos hoy</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value font-serif">{{ stats.activeTables }}</div>
+          <div class="kpi-label">Mesas activas</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value font-serif">
+            {{ stats.totalRatings ? (stats.avgRating | number:'1.1-1') : '–' }}
+            <span class="kpi-star" *ngIf="stats.totalRatings">★</span>
+          </div>
+          <div class="kpi-label">{{ stats.totalRatings }} valoraciones</div>
+        </div>
+      </div>
+
+      <!-- Top platos -->
+      <div class="stats-section">
+        <div class="stats-section-label">Top 5 platos</div>
+        <div class="bars-list" *ngIf="stats.topItems.length; else emptyTop">
+          <div *ngFor="let it of stats.topItems" class="bar-row">
+            <div class="bar-name">{{ it.name }}</div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width.%]="(it.quantity / topItemMaxQty()) * 100"></div>
+            </div>
+            <div class="bar-value">{{ it.quantity }}</div>
+          </div>
+        </div>
+        <ng-template #emptyTop><div class="empty-mini">Aún no hay pedidos</div></ng-template>
+      </div>
+
+      <!-- Top buffets -->
+      <div class="stats-section">
+        <div class="stats-section-label">Buffets más vendidos</div>
+        <div class="bars-list" *ngIf="stats.topBuffets.length; else emptyBuf">
+          <div *ngFor="let b of stats.topBuffets" class="bar-row">
+            <div class="bar-name"><span class="bar-icon">{{ b.icon }}</span> {{ b.name }}</div>
+            <div class="bar-track">
+              <div class="bar-fill ember" [style.width.%]="(b.sessions / topBuffetMaxSessions()) * 100"></div>
+            </div>
+            <div class="bar-value">{{ b.sessions }} <small>({{ b.revenue | currency:'EUR' }})</small></div>
+          </div>
+        </div>
+        <ng-template #emptyBuf><div class="empty-mini">Aún no hay sesiones con buffet</div></ng-template>
+      </div>
+
+      <!-- Recent ratings -->
+      <div class="stats-section">
+        <div class="stats-section-label">Últimas valoraciones</div>
+        <div class="ratings-list" *ngIf="stats.recentRatings.length; else emptyRat">
+          <div *ngFor="let r of stats.recentRatings" class="rating-row">
+            <div class="rating-stars">
+              <span *ngFor="let s of [1,2,3,4,5]" [class.on]="s <= r.rating">★</span>
+            </div>
+            <div class="rating-body">
+              <div class="rating-comment" *ngIf="r.comment">"{{ r.comment }}"</div>
+              <div class="rating-comment muted" *ngIf="!r.comment">Sin comentario</div>
+              <div class="rating-time">{{ r.createdAt | date:'dd MMM HH:mm' }}</div>
+            </div>
+          </div>
+        </div>
+        <ng-template #emptyRat><div class="empty-mini">Aún no hay valoraciones</div></ng-template>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <div style="height:40px"></div>
+</ion-content>

@@ -1,0 +1,44 @@
+<ion-content class="confirmation-content" [fullscreen]="true">
+  <div class="confirmation-wrapper">
+    <div class="check-icon">
+      <div class="ember-circle">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </div>
+    </div>
+
+    <span class="status-badge font-serif">en marcha</span>
+    <h1 class="title font-serif">Tu pedido va a cocina</h1>
+    <p class="subtitle" *ngIf="order">
+      La cocina ha recibido {{ order.items.length }} {{ order.items.length === 1 ? 'plato' : 'platos' }}.
+      Tiempo estimado de la primera ronda:
+    </p>
+
+    <div class="eta-display font-serif">{{ eta }} min</div>
+
+    <div class="progress-strip" *ngIf="order">
+      <div class="progress-step active">
+        <span class="step-dot"></span>
+        <span>Recibido</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step">
+        <span class="step-dot"></span>
+        <span>Cocinando</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step">
+        <span class="step-dot"></span>
+        <span>Servido</span>
+      </div>
+    </div>
+
+    <div class="cta-buttons">
+      <ion-button class="btn-ghost" expand="block" (click)="viewStatus()">
+        Ver estado
+      </ion-button>
+      <ion-button class="btn-ember" expand="block" (click)="orderMore()">
+        Pedir más
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

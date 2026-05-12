@@ -1,0 +1,183 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --ember: #d94a1f;
+  --ember-light: #f0673a;
+  --gold: #c89b4a;
+  --leaf: #5b7a3a;
+  --warning: #c4760e;
+  --bg: #f6f1e8;
+  --bg-2: #efe7d7;
+  --surface: #ffffff;
+  --ink: #1c1410;
+  --ink-2: #4a3a2e;
+  --ink-3: #8a7967;
+  --ink-4: #b8a89a;
+  --dark-bg: #1a1410;
+  --dark-surface: #2a201a;
+
+  --ion-font-family: 'Inter', sans-serif;
+  --ion-background-color: var(--bg);
+  --ion-text-color: var(--ink);
+  --ion-color-primary: var(--ember);
+  --ion-color-primary-rgb: 217, 74, 31;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #c04219;
+  --ion-color-primary-tint: #dd5e37;
+  --ion-toolbar-background: var(--bg);
+  --ion-item-background: var(--surface);
+}
+
+* { box-sizing: border-box; }
+
+.font-serif { font-family: 'Fraunces', serif; }
+
+ion-content { --background: var(--bg); }
+
+ion-toolbar {
+  --background: var(--bg);
+  --border-color: transparent;
+  --color: var(--ink);
+}
+
+ion-header { box-shadow: none; }
+
+.btn-ember {
+  --background: var(--ember);
+  --color: white;
+  --border-radius: 14px;
+  font-weight: 600;
+  height: 52px;
+  font-size: 16px;
+}
+
+.btn-ghost {
+  --background: transparent;
+  --color: var(--ember);
+  --border-radius: 14px;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --border-color: rgba(217,74,31,0.3);
+  height: 52px;
+  font-size: 15px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--ink-3);
+  border: 1.5px solid var(--bg-2);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+
+  &.active {
+    background: var(--ember);
+    color: white;
+    border-color: var(--ember);
+  }
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid var(--bg-2);
+}
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+  &.green { background: var(--leaf); }
+  &.red { background: var(--ember); }
+  &.gold { background: var(--gold); }
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  &.tag-top { background: rgba(217,74,31,.12); color: var(--ember); }
+  &.tag-spicy { background: rgba(196,118,14,.12); color: var(--warning); }
+  &.tag-gluten-free { background: rgba(91,122,58,.12); color: var(--leaf); }
+  &.tag-veg { background: rgba(91,122,58,.12); color: var(--leaf); }
+}
+
+.dark-card {
+  background: var(--dark-bg);
+  color: white;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.quantity-stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  button {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-2);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+
+  span { font-weight: 600; font-size: 16px; min-width: 20px; text-align: center; }
+}
+
+ion-back-button { --color: var(--ink); }
+
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
+
+/* Kitchen panel */
+.kitchen-theme { --ion-background-color: #0f0d0b; --ion-text-color: #f0ebe3; }

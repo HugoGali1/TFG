@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/menu"></ion-back-button></ion-buttons>
+    <ion-title class="font-serif">{{ 'cart.title' | t }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="(items$ | async) as items">
+    <div *ngIf="items.length === 0" class="empty-cart">
+      <div class="empty-icon">🍽️</div>
+      <p>{{ 'cart.empty' | t }}</p>
+      <ion-button fill="clear" routerLink="/menu">{{ 'cart.see_menu' | t }}</ion-button>
+    </div>
+
+    <div *ngIf="items.length > 0" class="cart-items">
+      <div *ngFor="let item of items; let i = index" class="cart-item card">
+        <div class="item-main">
+          <div class="item-info">
+            <div class="item-name font-serif">{{ item.menuItem | tField:'name' }}</div>
+            <div *ngIf="item.cookingLevel" class="item-level">{{ item.cookingLevel | titlecase }}</div>
+            <div *ngIf="item.notes" class="item-notes">{{ item.notes }}</div>
+            <div class="item-price" *ngIf="isCovered(item.menuItem); else extraPrice">
+              <span class="incluido-pill-sm">{{ 'common.included' | t }}</span>
+            </div>
+            <ng-template #extraPrice>
+              <div class="item-price">{{ (item.menuItem.price * item.quantity) | currency:'EUR' }}</div>
+            </ng-template>
+          </div>
+          <div class="item-actions">
+            <button class="remove-btn" (click)="remove(i)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+        <div class="quantity-stepper">
+          <button (click)="changeQty(i, -1)">−</button>
+          <span>{{ item.quantity }}</span>
+          <button (click)="changeQty(i, 1)">+</button>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <h3 class="section-label">{{ 'cart.notes_label' | t }}</h3>
+        <ion-textarea [(ngModel)]="generalNotes" [placeholder]="'cart.notes_placeholder' | t" rows="2" class="general-notes"></ion-textarea>
+      </div>
+
+      <div class="total-card card">
+        <ng-container *ngIf="sessionService.current?.buffet as buffet">
+          <div class="total-row buffet-line">
+            <span>{{ buffet | tField:'name' }}</span>
+            <span class="incluido-pill-sm">{{ 'common.included' | t }}</span>
+          </div>
+          <div class="total-row muted" *ngIf="coveredCount > 0">
+            <span>{{ coveredCount }} {{ 'cart.dishes_no_cost' | t }}</span>
+            <span>0,00 €</span>
+          </div>
+          <div class="total-row" *ngIf="extrasTotal > 0">
+            <span>{{ 'cart.extras' | t }}</span>
+            <span>{{ extrasTotal | currency:'EUR' }}</span>
+          </div>
+          <div class="total-row main">
+            <span class="font-serif">{{ 'cart.this_round' | t }}</span>
+            <span class="font-serif">{{ extrasTotal | currency:'EUR' }}</span>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!sessionService.current?.buffet">
+          <div class="total-row">
+            <span>{{ 'cart.subtotal' | t }}</span>
+            <span>{{ cartService.total | currency:'EUR' }}</span>
+          </div>
+          <div class="total-row main">
+            <span class="font-serif">{{ 'cart.total_estimated' | t }}</span>
+            <span class="font-serif">{{ cartService.total | currency:'EUR' }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div style="height:120px"></div>
+  </ng-container>
+</ion-content>
+
+<div class="send-footer" *ngIf="cartService.count > 0">
+  <ion-button class="btn-ember" expand="block" (click)="sendToKitchen()">
+    <ion-icon slot="start" name="flame-outline"></ion-icon>
+    {{ 'cart.send_to_kitchen' | t }}
+  </ion-button>
+  <p class="footer-hint">{{ 'cart.add_more_later' | t }}</p>
+</div>

@@ -1,0 +1,41 @@
+<ion-content class="ts-content" [fullscreen]="true">
+  <div class="ts-wrapper">
+    <ng-container *ngIf="loading">
+      <ion-spinner name="crescent" class="ts-spinner"></ion-spinner>
+      <p class="ts-status">Verificando mesa…</p>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && error">
+      <div class="ts-error">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <h2>{{ error }}</h2>
+        <p>Pide ayuda al equipo.</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && !error && table">
+      <div class="ts-brand font-serif">Brasa <span class="amp">&</span> Ascuas</div>
+      <div class="ts-mesa-badge">Mesa {{ table.number }}</div>
+      <h1 class="ts-title font-serif">Bienvenidos</h1>
+      <p class="ts-subtitle">¿Cuántos sois en la mesa?</p>
+
+      <div class="ts-stepper">
+        <button class="step-btn" [disabled]="partySize <= 1" (click)="changeParty(-1)">−</button>
+        <div class="ts-count">
+          <span class="count-num font-serif">{{ partySize }}</span>
+          <span class="count-label">{{ partySize === 1 ? 'persona' : 'personas' }}</span>
+        </div>
+        <button class="step-btn" [disabled]="partySize >= (table.capacity ?? 8)" (click)="changeParty(1)">+</button>
+      </div>
+
+      <div class="ts-capacity" *ngIf="table.capacity">
+        Capacidad máxima de la mesa: {{ table.capacity }}
+      </div>
+
+      <ion-button class="btn-ember ts-cta" expand="block" (click)="start()">
+        <ion-icon slot="start" name="restaurant-outline"></ion-icon>
+        Empezar
+      </ion-button>
+    </ng-container>
+  </div>
+</ion-content>

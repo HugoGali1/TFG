@@ -1,0 +1,29 @@
+.summary-card { margin: 16px; }
+.summary-row { display: flex; justify-content: space-between; align-items: center; }
+.summary-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+.summary-dishes { font-size: 28px; font-style: italic; font-weight: 600; }
+.summary-meta { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.summary-total { text-align: right; }
+.summary-amount { font-size: 22px; font-style: italic; }
+.rounds-list { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
+.round-block { background: var(--surface); border-radius: 14px; overflow: hidden; border: 1px solid var(--bg-2); }
+.round-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--bg-2); }
+.round-badge { font-size: 14px; font-style: italic; font-weight: 600; flex: 1; }
+.round-time { font-size: 12px; color: var(--ink-3); }
+.round-status { font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; flex-shrink: 0;
+  &.gold  { background: rgba(200,155,74,.15);  color: #b08226; }
+  &.red   { background: rgba(217,74,31,.15);   color: var(--ember); }
+  &.green { background: rgba(91,122,58,.15);   color: var(--leaf); }
+  &.gray  { background: rgba(138,121,103,.15); color: var(--ink-3); }
+}
+.round-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; border-bottom: 1px solid var(--bg-2); font-size: 13px; color: var(--ink-2); &:last-child { border-bottom: none; } }
+.ri-info { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex: 1; }
+.ri-name { color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ri-qty { color: var(--ink-4); font-size: 12px; flex-shrink: 0; }
+.ri-status { font-size: 10px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; flex-shrink: 0; margin-left: 8px;
+  &.gold  { background: rgba(200,155,74,.12);  color: #b08226; }
+  &.red   { background: rgba(217,74,31,.12);   color: var(--ember); }
+  &.green { background: rgba(91,122,58,.12);   color: var(--leaf); }
+  &.gray  { background: rgba(138,121,103,.12); color: var(--ink-3); }
+}
+.pay-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 12px 20px; padding-bottom: calc(12px + env(safe-area-inset-bottom,0px)); background: var(--bg); border-top: 1px solid var(--bg-2); }

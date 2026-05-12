@@ -1,0 +1,100 @@
+<ion-header>
+  <ion-toolbar class="kitchen-toolbar">
+    <ion-title>
+      <span class="kitchen-title font-serif">Brasa &amp; Ascuas · Cocina</span>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="authService.logout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="tab-toolbar">
+    <div class="tab-buttons">
+      <button class="tab-btn" [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'">
+        <ion-icon name="flame-outline"></ion-icon>
+        Pedidos
+        <span class="tab-badge" *ngIf="orders.length">{{ orders.length }}</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">
+        <ion-icon name="hand-left-outline"></ion-icon>
+        Solicitudes
+        <span class="tab-badge warn" *ngIf="waiterRequests.length">{{ waiterRequests.length }}</span>
+      </button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="kitchen-content">
+
+  <!-- ORDERS TAB -->
+  <ng-container *ngIf="activeTab === 'orders'">
+    <div *ngIf="orders.length === 0" class="empty-kitchen">
+      <ion-icon name="flame-outline" style="font-size:48px"></ion-icon>
+      <p>Sin pedidos activos</p>
+    </div>
+
+    <div *ngFor="let order of orders" class="order-card" [class.is-new]="newOrderIds.has(order._id)">
+      <div class="oc-header">
+        <div>
+          <span class="oc-table font-serif">Mesa {{ tableNumber(order) }}</span>
+          <span class="oc-round">· Ronda {{ order.roundNumber }}</span>
+          <span class="new-badge" *ngIf="newOrderIds.has(order._id)">NUEVO</span>
+        </div>
+        <span class="oc-status" [ngClass]="order.status">{{ statusLabel(order.status) }}</span>
+      </div>
+
+      <div *ngFor="let item of order.items; let i = index" class="oi-row" [ngClass]="{ served: item.status === 'served' }">
+        <div class="oi-main">
+          <span class="oi-qty">{{ item.quantity }}</span>
+          <div class="oi-details">
+            <span class="oi-name">{{ item.name }}</span>
+            <span *ngIf="item.cookingLevel" class="oi-meta">{{ item.cookingLevel }}</span>
+            <span *ngIf="item.notes" class="oi-notes">📝 {{ item.notes }}</span>
+          </div>
+        </div>
+        <button
+          *ngIf="item.status !== 'served'"
+          class="action-btn"
+          [ngClass]="item.status"
+          (click)="setItemStatus(order, i, nextStatus(item.status, item))"
+        >{{ nextStatusLabel(item.status, item) }}</button>
+      </div>
+
+      <div *ngIf="order.generalNotes" class="oc-notes">📝 {{ order.generalNotes }}</div>
+
+      <div class="oc-footer">
+        <button class="served-btn" (click)="markServed(order)">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          Ronda completa — servida
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- REQUESTS TAB -->
+  <ng-container *ngIf="activeTab === 'requests'">
+    <div *ngIf="waiterRequests.length === 0" class="empty-kitchen">
+      <ion-icon name="hand-left-outline" style="font-size:48px"></ion-icon>
+      <p>Sin solicitudes pendientes</p>
+    </div>
+
+    <div *ngFor="let req of waiterRequests" class="req-card">
+      <div class="req-header">
+        <span class="req-table font-serif">Mesa {{ req.table.number }}</span>
+        <span class="req-time">{{ req.createdAt | date:'HH:mm' }}</span>
+      </div>
+      <div class="req-type">
+        <ion-icon [name]="req.type === 'water' ? 'water-outline' : req.type === 'bill' ? 'card-outline' : 'hand-left-outline'"></ion-icon>
+        {{ req.type === 'water' ? 'Agua' : req.type === 'bill' ? 'La cuenta' : req.type === 'box' ? 'Para llevar' : 'Necesita atención' }}
+      </div>
+      <div *ngIf="req.message" class="req-msg">{{ req.message }}</div>
+      <button class="resolve-btn" (click)="resolveRequest(req)">
+        <ion-icon name="checkmark-outline"></ion-icon>
+        Atendido
+      </button>
+    </div>
+  </ng-container>
+
+</ion-content>

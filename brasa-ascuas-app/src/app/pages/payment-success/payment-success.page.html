@@ -1,0 +1,58 @@
+<ion-content class="success-content" [fullscreen]="true">
+  <div class="success-wrapper">
+    <div class="check-circle">
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </div>
+
+    <span class="hasta-badge font-serif">Hasta pronto</span>
+    <h1 class="title font-serif">Gracias por compartir mesa</h1>
+    <p class="subtitle">Hemos recibido tu pago. El recibo está en camino a tu correo.</p>
+
+    <div class="receipt-summary card" style="width:100%;max-width:320px">
+      <div class="rs-row">
+        <span class="rs-label">Fecha</span>
+        <span>{{ now | date:'dd MMM · HH:mm' }}</span>
+      </div>
+      <div class="rs-row">
+        <span class="rs-label">Estado</span>
+        <span class="rs-paid">✓ Pagado</span>
+      </div>
+    </div>
+
+    <div class="rating-section" *ngIf="!submitted">
+      <div class="rating-label">¿Cómo ha estado todo?</div>
+      <div class="emoji-row">
+        <button
+          *ngFor="let e of emojis; let i = index"
+          class="emoji-btn"
+          [class.selected]="rating === i + 1"
+          (click)="setRating(i + 1)"
+        >{{ e }}</button>
+      </div>
+      <ion-textarea
+        *ngIf="rating > 0"
+        [(ngModel)]="comment"
+        placeholder="Cuéntanos más (opcional)…"
+        rows="2"
+        class="comment-input"
+      ></ion-textarea>
+      <ion-button
+        *ngIf="rating > 0"
+        class="btn-ember send-feedback-btn"
+        expand="block"
+        [disabled]="sending"
+        (click)="submitFeedback()"
+      >
+        <ion-spinner *ngIf="sending" name="crescent" slot="start"></ion-spinner>
+        Enviar valoración
+      </ion-button>
+    </div>
+
+    <div class="rating-thanks" *ngIf="submitted">
+      <ion-icon name="heart"></ion-icon>
+      <p>¡Gracias por tu valoración!</p>
+    </div>
+
+    <p class="closing-hint">Ya puedes cerrar la app. ¡Vuelve pronto!</p>
+  </div>
+</ion-content>

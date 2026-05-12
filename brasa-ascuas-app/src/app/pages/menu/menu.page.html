@@ -1,0 +1,103 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="hero-toolbar">
+    <ion-buttons slot="end">
+      <ion-button class="action-pill" (click)="router.navigateByUrl('/call-waiter')">
+        <ion-icon slot="start" name="hand-left-outline"></ion-icon>
+        {{ 'menu.assistance' | t }}
+      </ion-button>
+      <ion-button class="action-pill" (click)="router.navigateByUrl('/order-status')">
+        <ion-icon slot="start" name="flame-outline"></ion-icon>
+        {{ 'menu.status' | t }}
+      </ion-button>
+      <ion-button class="action-pill primary" (click)="router.navigateByUrl('/order-history')">
+        <ion-icon slot="start" name="receipt-outline"></ion-icon>
+        {{ 'menu.bill' | t }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="hero-block">
+    <button class="lang-toggle" (click)="lang.toggle()" [attr.aria-label]="'Switch language'">
+      <img [src]="lang.toggleFlagSrc" alt="" class="flag-img">
+    </button>
+    <div class="hero-meta" *ngIf="sessionService.current as s">
+      {{ 'menu.table' | t }} {{ s.table.number }} · {{ 'menu.round' | t }} {{ (s.roundCount || 0) + 1 }}
+    </div>
+    <h1 class="hero-title font-serif">{{ 'menu.title' | t }}</h1>
+    <div class="hero-divider"></div>
+    <div class="hero-tagline">{{ 'menu.tagline' | t }}</div>
+  </div>
+
+  <div class="search-bar-wrapper">
+    <ion-searchbar
+      [placeholder]="'menu.search' | t"
+      (ionInput)="onSearch($event)"
+      [value]="searchText"
+      debounce="200"
+    ></ion-searchbar>
+  </div>
+
+  <div class="category-tabs">
+    <button
+      *ngFor="let cat of categories"
+      class="cat-tab"
+      [class.active]="selectedCategory === cat._id"
+      [style.background]="selectedCategory === cat._id ? catBgFor(cat) : ''"
+      (click)="selectCategory(cat._id)"
+    >
+      <span class="cat-name">{{ cat | tField:'name' }}</span>
+    </button>
+  </div>
+
+  <div class="filters-row">
+    <span class="chip" [class.active]="activeFilter==='veg'" (click)="setFilter('veg')">{{ 'menu.veg' | t }}</span>
+    <span class="chip" [class.active]="activeFilter==='gluten'" (click)="setFilter('gluten')">{{ 'menu.gluten_free' | t }}</span>
+    <span class="chip" [class.active]="activeFilter==='spicy'" (click)="setFilter('spicy')">{{ 'menu.spicy' | t }}</span>
+  </div>
+
+  <div class="items-list">
+    <div *ngIf="filteredItems.length === 0" class="empty-filter">
+      <p>{{ 'menu.empty_filter' | t }}</p>
+    </div>
+
+    <div *ngFor="let item of filteredItems" class="dish-card card" (click)="openDetail(item)">
+      <div class="dish-thumb" [style.background]="categoryStyle.bg">
+        <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.name" class="thumb-img" loading="lazy" [style.object-position]="imageFocal(item.imageUrl)">
+        <span class="thumb-monogram font-serif" *ngIf="!item.imageUrl">{{ item.name.charAt(0) }}</span>
+        <span class="thumb-star" *ngIf="item.tags.includes('TOP')">★</span>
+      </div>
+
+      <div class="dish-body">
+        <div class="dish-badges">
+          <span *ngIf="item.isVegetarian" class="badge badge-veg">{{ 'menu.veg' | t }}</span>
+          <span *ngIf="item.isGlutenFree" class="badge badge-sg">{{ 'menu.gluten_free' | t }}</span>
+          <span *ngIf="item.isSpicy" class="badge badge-spicy">{{ 'menu.spicy' | t }}</span>
+        </div>
+        <div class="dish-name font-serif">{{ item | tField:'name' }}</div>
+        <div class="dish-desc">{{ item | tField:'description' }}</div>
+        <div class="dish-footer">
+          <span class="cook-time">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ item.cookingTimeMinutes > 0 ? item.cookingTimeMinutes + ' min' : ('menu.cooktime_now' | t) }}
+          </span>
+          <span *ngIf="isCovered(item); else extraPrice" class="incluido-pill">{{ 'common.included' | t }}</span>
+          <ng-template #extraPrice>
+            <span class="dish-price">{{ item.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:100px"></div>
+</ion-content>
+
+<div class="cart-footer" *ngIf="cartService.count > 0" (click)="goToCart()">
+  <div class="cart-left">
+    <span class="cart-count-badge">{{ cartService.count }}</span>
+    <span class="cart-label">{{ 'menu.cart_view' | t }}</span>
+  </div>
+  <span class="cart-total">{{ cartService.total | currency:'EUR' }}</span>
+</div>

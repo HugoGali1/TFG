@@ -1,0 +1,10 @@
+.login-content { --background: #1a1410; }
+.login-wrapper { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 28px; background: radial-gradient(ellipse at 30% 20%, rgba(217,74,31,0.2) 0%, transparent 60%), #1a1410; }
+.brand { text-align: center; margin-bottom: 48px; }
+.brand-name { font-size: 36px; font-style: italic; font-weight: 600; color: white; margin: 0 0 8px; .amp { color: var(--ember); } }
+.brand-sub { color: rgba(255,255,255,0.4); font-size: 14px; margin: 0; }
+.login-form { display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; label { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500; } }
+.styled-input { --background: rgba(255,255,255,0.08); --color: white; --placeholder-color: rgba(255,255,255,0.3); --border-radius: 14px; --padding-start: 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12); }
+.btn-ember { --background: var(--ember); --border-radius: 14px; height: 54px; font-size: 16px; font-weight: 600; margin-top: 8px; }
+.dev-link { display: block; text-align: center; margin-top: 24px; color: rgba(255,255,255,0.5); font-size: 13px; font-style: italic; text-decoration: none; transition: color .15s; &:hover { color: var(--ember-light); } }

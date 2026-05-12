@@ -1,0 +1,103 @@
+# ─────────────────────────────────────────────
+# Secrets
+# ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# ─────────────────────────────────────────────
+# Dependencies
+# ─────────────────────────────────────────────
+node_modules/
+**/node_modules/
+
+# ─────────────────────────────────────────────
+# Build outputs
+# ─────────────────────────────────────────────
+dist/
+**/dist/
+out/
+**/out/
+www/
+**/www/
+build/
+**/build/
+
+# ─────────────────────────────────────────────
+# Angular / Ionic / Capacitor
+# ─────────────────────────────────────────────
+.angular/
+**/.angular/
+.sourcemaps/
+.versions/
+.ionic/
+platforms/
+plugins/
+.sass-cache/
+/coverage
+.nx/
+connect.lock
+libpeerconnection.log
+testem.log
+/typings
+
+# ─────────────────────────────────────────────
+# NestJS specific
+# ─────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─────────────────────────────────────────────
+# Logs
+# ─────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+log.txt
+
+# ─────────────────────────────────────────────
+# IDEs and editors
+# ─────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.project
+.classpath
+.c9/
+.settings/
+*.sublime-project
+*.sublime-workspace
+*.launch
+.history/
+
+# ─────────────────────────────────────────────
+# OS / temporary
+# ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.tmp
+*.tmp
+*.tmp.*
+$RECYCLE.BIN/
+UserInterfaceState.xcuserstate
+
+# ─────────────────────────────────────────────
+# Project-specific
+# ─────────────────────────────────────────────
+# Memoria académica (no acabada todavía)
+MEMORIA.docx
+MEMORIA.md
+
+# Export HTML antiguo
+Brasa-Ascuas-app.html
+
+# Accesos directos de Windows
+*.lnk

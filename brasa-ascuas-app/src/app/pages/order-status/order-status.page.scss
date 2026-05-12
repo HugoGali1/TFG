@@ -1,0 +1,24 @@
+.orders-list { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.order-block { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid var(--bg-2); }
+.order-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: var(--bg-2); }
+.round-badge { font-size: 15px; font-style: italic; font-weight: 600; }
+.order-status-chip { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  &.red { background: rgba(217,74,31,.12); color: var(--ember); }
+  &.gold { background: rgba(200,155,74,.12); color: var(--gold); }
+  &.green { background: rgba(91,122,58,.12); color: var(--leaf); }
+  &.gray { background: rgba(0,0,0,.06); color: var(--ink-3); }
+}
+.order-item { border-radius: 0; border: none; border-bottom: 1px solid var(--bg-2); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.oi-info { display: flex; align-items: center; gap: 8px; }
+.oi-name { font-size: 14px; font-style: italic; font-weight: 600; }
+.oi-level { font-size: 11px; color: var(--ink-4); }
+.oi-qty { font-size: 12px; color: var(--ink-3); }
+.oi-status { font-size: 12px; font-weight: 600;
+  &.red { color: var(--ember); }
+  &.gold { color: var(--gold); }
+  &.green { color: var(--leaf); }
+  &.gray { color: var(--ink-4); }
+}
+.order-notes { padding: 10px 14px; font-size: 12px; color: var(--ink-3); font-style: italic; }
+.empty-state { text-align: center; padding: 60px 24px; color: var(--ink-3); }
+.more-btn-footer { position: fixed; bottom: 0; left: 0; right: 0; padding: 12px 20px; padding-bottom: calc(12px + env(safe-area-inset-bottom,0px)); background: var(--bg); border-top: 1px solid var(--bg-2); }

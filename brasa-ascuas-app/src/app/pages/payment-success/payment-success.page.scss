@@ -1,0 +1,18 @@
+.success-content { --background: #1a1410; --color: white; }
+.success-wrapper { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; text-align: center; }
+.check-circle { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #5b7a3a, #7aad50); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; ion-icon { font-size: 40px; color: white; } }
+.hasta-badge { font-size: 13px; font-style: italic; color: var(--ember); display: block; margin-bottom: 8px; }
+.title { font-size: 26px; font-style: italic; color: white; margin: 0 0 12px; }
+.subtitle { color: rgba(255,255,255,0.6); font-size: 14px; margin: 0 0 24px; }
+.receipt-summary { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px; margin-bottom: 24px; color: white; }
+.rs-row { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; }
+.rs-label { color: rgba(255,255,255,0.5); }
+.rs-paid { color: #7aad50; font-weight: 600; }
+.rating-section { margin-bottom: 32px; width: 100%; max-width: 320px; }
+.rating-label { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 12px; text-align: center; }
+.emoji-row { display: flex; gap: 10px; justify-content: center; }
+.emoji-btn { font-size: 30px; background: none; border: 2px solid transparent; border-radius: 50%; padding: 6px; cursor: pointer; transition: transform .2s, border-color .2s; &.selected { border-color: var(--ember); transform: scale(1.2); } }
+.comment-input { --background: rgba(255,255,255,0.06); --color: white; --placeholder-color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-top: 14px; font-size: 14px; padding: 4px 10px; }
+.send-feedback-btn { --background: var(--ember); --border-radius: 14px; height: 46px; font-size: 14px; font-weight: 600; margin-top: 12px; }
+.rating-thanks { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 32px; ion-icon { font-size: 28px; color: var(--ember); } p { color: rgba(255,255,255,0.85); font-size: 15px; font-style: italic; margin: 0; } }
+.closing-hint { font-size: 13px; color: rgba(255,255,255,0.5); font-style: italic; margin: 12px 0 0; }

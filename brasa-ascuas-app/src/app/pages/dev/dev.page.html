@@ -1,0 +1,65 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title class="font-serif">Modo demo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="dev-content">
+  <div class="dev-intro">
+    <h1 class="font-serif">Atajos de prueba</h1>
+    <p class="dev-tagline">Acceso rápido al panel de cocina y a cualquier mesa.</p>
+  </div>
+
+  <ng-container *ngIf="loading">
+    <div class="dev-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando…</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!loading && error">
+    <div class="dev-error">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>{{ error }}</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!loading && !error">
+    <div class="dev-section">
+      <div class="dev-section-label">Equipo</div>
+      <div class="dev-card kitchen" (click)="openAdmin()">
+        <div class="card-icon">⚙️</div>
+        <div class="card-body">
+          <div class="card-title font-serif">Panel de admin</div>
+          <div class="card-meta">Gestionar mesas, platos y buffets</div>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="card-chev"></ion-icon>
+      </div>
+      <div class="dev-card kitchen" (click)="openKitchen()">
+        <div class="card-icon">🧑‍🍳</div>
+        <div class="card-body">
+          <div class="card-title font-serif">Panel de cocina</div>
+          <div class="card-meta">Entrar como Cocina</div>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="card-chev"></ion-icon>
+      </div>
+    </div>
+
+    <div class="dev-section">
+      <div class="dev-section-label">Mesas</div>
+      <div class="dev-card table" *ngFor="let t of tables" (click)="openTable(t)">
+        <div class="card-icon">{{ t.number }}</div>
+        <div class="card-body">
+          <div class="card-title font-serif">Mesa {{ t.number }}</div>
+          <div class="card-meta">
+            <span class="status-dot" [ngClass]="t.status"></span>
+            {{ statusLabel(t.status) }} · {{ t.capacity }} pers. · {{ t.zone }}
+          </div>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="card-chev"></ion-icon>
+      </div>
+    </div>
+
+    <p class="dev-hint">Al pulsar una mesa se cierra cualquier sesión activa, se libera y se abre el flujo de cliente.</p>
+  </ng-container>
+</ion-content>

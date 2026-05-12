@@ -1,0 +1,25 @@
+<ion-content class="login-content" [fullscreen]="true">
+  <div class="login-wrapper">
+    <div class="brand">
+      <h1 class="brand-name font-serif">Brasa <span class="amp">&</span> Ascuas</h1>
+      <p class="brand-sub">Panel del equipo</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="login()" class="login-form">
+      <div class="field">
+        <label>Email</label>
+        <ion-input formControlName="email" type="email" placeholder="tu@brasaascuas.es" class="styled-input"></ion-input>
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <ion-input formControlName="password" type="password" placeholder="••••••••" class="styled-input"></ion-input>
+      </div>
+      <ion-button type="submit" class="btn-ember" expand="block" [disabled]="loading">
+        <ion-spinner *ngIf="loading" name="crescent" slot="start"></ion-spinner>
+        Entrar
+      </ion-button>
+    </form>
+
+    <a class="dev-link" routerLink="/dev">Modo demo →</a>
+  </div>
+</ion-content>

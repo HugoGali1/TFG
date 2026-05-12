@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar class="hero-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu" [style.--color]="'white'"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="item">
+  <div class="hero-area" [style.background]="catBg">
+    <img *ngIf="item.imageUrl" [src]="item.imageUrl" [alt]="item.name" class="hero-img" [style.object-position]="imageFocal(item.imageUrl)">
+    <span class="hero-monogram font-serif" *ngIf="!item.imageUrl">{{ item.name.charAt(0) }}</span>
+    <div class="hero-overlay"></div>
+    <div class="hero-badges">
+      <span *ngIf="item.tags.includes('TOP')" class="hero-badge-top">★ {{ 'dd.recommended' | t }}</span>
+    </div>
+  </div>
+
+  <div class="detail-body">
+    <div class="name-block">
+      <div class="diet-flags">
+        <span *ngIf="item.isVegetarian" class="flag flag-veg">{{ 'menu.veg' | t }}</span>
+        <span *ngIf="item.isGlutenFree" class="flag flag-sg">{{ 'menu.gluten_free' | t }}</span>
+        <span *ngIf="item.isSpicy" class="flag flag-spicy">{{ 'menu.spicy' | t }}</span>
+      </div>
+      <h1 class="dish-name font-serif">{{ item | tField:'name' }}</h1>
+      <div class="dish-meta-row">
+        <span class="cook-time">
+          <ion-icon name="time-outline"></ion-icon>
+          {{ item.cookingTimeMinutes > 0 ? item.cookingTimeMinutes + ' ' + ('dd.cooktime_aprox' | t) : ('menu.cooktime_now' | t) }}
+        </span>
+      </div>
+    </div>
+
+    <p class="dish-desc">{{ item | tField:'description' }}</p>
+
+    <div class="allergens-block" *ngIf="item.allergens?.length">
+      <div class="block-label">{{ 'dd.allergens' | t }}</div>
+      <div class="allergen-list">
+        <span *ngFor="let a of item.allergens" class="allergen-chip">{{ a }}</span>
+      </div>
+    </div>
+
+    <div class="levels-block" *ngIf="item.cookingLevels?.length">
+      <div class="block-label">{{ 'dd.cooking_level' | t }}</div>
+      <div class="level-grid">
+        <button
+          *ngFor="let lvl of item.cookingLevels"
+          class="level-btn"
+          [class.selected]="selectedLevel === lvl"
+          (click)="selectedLevel = lvl"
+        >{{ levelLabel(lvl) }}</button>
+      </div>
+    </div>
+
+    <div class="notes-block">
+      <div class="block-label">{{ 'dd.notes_label' | t }} <span class="optional">{{ 'common.optional' | t }}</span></div>
+      <ion-textarea
+        [(ngModel)]="notes"
+        [placeholder]="'dd.notes_placeholder' | t"
+        rows="2"
+        class="notes-input"
+      ></ion-textarea>
+    </div>
+
+    <div style="height:130px"></div>
+  </div>
+</ion-content>
+
+<div class="add-footer" *ngIf="item">
+  <div class="qty-price-row">
+    <div class="quantity-stepper">
+      <button (click)="changeQty(-1)">−</button>
+      <span>{{ quantity }}</span>
+      <button (click)="changeQty(1)">+</button>
+    </div>
+    <span *ngIf="isCovered; else priceLabel" class="incluido-pill">{{ 'dd.included_in_buffet' | t }}</span>
+    <ng-template #priceLabel>
+      <span class="unit-price">{{ item.price | currency:'EUR':'symbol':'1.2-2' }} {{ 'dd.unit' | t }}</span>
+    </ng-template>
+  </div>
+  <ion-button class="btn-ember" expand="block" (click)="addToCart()">
+    <ng-container *ngIf="isCovered; else priceBtn">{{ 'dd.add_to_order' | t }}</ng-container>
+    <ng-template #priceBtn>{{ 'dd.add_to_order' | t }} — {{ (item.price * quantity) | currency:'EUR' }}</ng-template>
+  </ion-button>
+</div>

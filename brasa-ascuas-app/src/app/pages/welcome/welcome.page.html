@@ -1,0 +1,46 @@
+<ion-content class="welcome-content" [fullscreen]="true">
+  <div class="welcome-wrapper">
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent" color="light"></ion-spinner>
+    </div>
+
+    <div *ngIf="!loading && error" class="error-state">
+      <div class="error-icon">⚠️</div>
+      <p>{{ error }}</p>
+    </div>
+
+    <ng-container *ngIf="!loading && !error && (session$ | async) as session">
+      <div class="status-bar">
+        <span class="time">{{ now | date:'HH:mm' }}</span>
+      </div>
+
+      <div class="brand-section">
+        <div class="brand-logo">
+          <span class="brand-name font-serif">Brasa <span class="amp">&</span> Ascuas</span>
+        </div>
+        <p class="brand-tagline">Bienvenido. Estás conectado a tu mesa — pide cuanto quieras y paga al final.</p>
+      </div>
+
+      <div class="table-card card">
+        <div class="table-card-header">
+          <span class="status-dot green"></span>
+          <span class="table-open-label">Mesa abierta</span>
+        </div>
+        <div class="table-number font-serif">Mesa {{ session.table.number }}</div>
+        <div class="table-meta">
+          <span class="table-zone">{{ session.table.zone | titlecase }}</span>
+          <span class="dot-sep">·</span>
+          <span>{{ session.partySize }} {{ session.partySize === 1 ? 'persona' : 'personas' }}</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <ion-button class="btn-ember" expand="block" (click)="start()">
+          Empezar a pedir
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+        <p class="subtext">Sin registro · Pagas al final desde el móvil</p>
+      </div>
+    </ng-container>
+  </div>
+</ion-content>

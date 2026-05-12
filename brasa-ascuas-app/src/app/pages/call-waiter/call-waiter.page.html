@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/menu"></ion-back-button></ion-buttons>
+    <ion-title class="font-serif">Llamar al equipo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="hero-section dark-card" style="margin:16px">
+    <div class="hero-badge font-serif">¿en qué te ayudamos?</div>
+    <h2 class="hero-title">El equipo está disponible. Te atenderán en menos de 2 min.</h2>
+  </div>
+
+  <div class="request-list">
+    <div *ngFor="let req of requests" class="request-row card" (click)="sendRequest(req.type)">
+      <ion-icon [name]="req.icon" class="req-icon"></ion-icon>
+      <div class="req-info">
+        <div class="req-label">{{ req.label }}</div>
+        <div class="req-sub">{{ req.sub }}</div>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="req-arrow"></ion-icon>
+    </div>
+  </div>
+
+  <div class="message-section">
+    <div class="msg-label">Mensaje libre</div>
+    <ion-textarea [(ngModel)]="freeMessage" placeholder="Escribe lo que necesites…" rows="3" class="msg-input"></ion-textarea>
+    <ion-button *ngIf="freeMessage" class="btn-ember" expand="block" [disabled]="sending" (click)="sendRequest('other')">
+      Enviar mensaje
+    </ion-button>
+  </div>
+</ion-content>

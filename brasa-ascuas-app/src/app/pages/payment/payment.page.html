@@ -1,0 +1,94 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/order-history"></ion-back-button></ion-buttons>
+    <ion-title class="font-serif">La cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="(session$ | async) as session">
+    <div class="bill-hero">
+      <div class="bill-mesa">Mesa {{ session.table?.number }}</div>
+      <div class="bill-meta">{{ session.roundCount }} {{ session.roundCount === 1 ? 'ronda' : 'rondas' }} · {{ session.openedAt | date:'HH:mm' }}</div>
+    </div>
+
+    <div class="receipt">
+      <ng-container *ngIf="buffet">
+        <div class="receipt-row">
+          <span>{{ buffet.name }} · {{ partySize }} {{ partySize === 1 ? 'pers.' : 'pers.' }}</span>
+          <span>{{ buffetBase | currency:'EUR' }}</span>
+        </div>
+        <div class="receipt-row muted">
+          <span>{{ buffet.pricePerPerson | currency:'EUR' }} × {{ partySize }} personas</span>
+          <span></span>
+        </div>
+        <div class="receipt-row" *ngIf="extrasAmount > 0">
+          <span>Extras</span>
+          <span>{{ extrasAmount | currency:'EUR' }}</span>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!buffet">
+        <div class="receipt-row">
+          <span>Subtotal</span>
+          <span>{{ subtotal | currency:'EUR' }}</span>
+        </div>
+      </ng-container>
+      <div class="receipt-row muted">
+        <span>IVA incluido (10%)</span>
+        <span>{{ (subtotal - subtotal / 1.1) | currency:'EUR' }}</span>
+      </div>
+      <div class="receipt-row tip-row" *ngIf="tipPercent > 0">
+        <span>Propina ({{ tipPercent }}%)</span>
+        <span>{{ tipAmount | currency:'EUR' }}</span>
+      </div>
+      <div class="receipt-total">
+        <span class="font-serif">Total</span>
+        <span class="font-serif">{{ total | currency:'EUR' }}</span>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Propina</div>
+      <div class="section-hint">Opcional — al equipo del restaurante</div>
+      <div class="tip-options">
+        <button
+          *ngFor="let opt of tipOptions"
+          class="tip-btn"
+          [class.selected]="tipPercent === opt.value"
+          (click)="tipPercent = opt.value"
+        >
+          <span class="tip-label">{{ opt.label }}</span>
+          <span class="tip-amount" *ngIf="opt.value > 0">{{ (subtotal * opt.value / 100) | currency:'EUR' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Método de pago</div>
+      <div class="method-list">
+        <div *ngFor="let m of methods" class="method-row" [class.selected]="selectedMethod === m.id" (click)="selectedMethod = m.id">
+          <ion-icon [name]="m.icon"></ion-icon>
+          <span>{{ m.label }}</span>
+          <div class="method-radio" [class.checked]="selectedMethod === m.id"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-label">Recibo por email</div>
+      <div class="section-hint">Opcional — te enviamos justificante</div>
+      <ion-input [(ngModel)]="receiptEmail" type="email" placeholder="tu@email.com" class="email-input"></ion-input>
+    </div>
+
+    <div style="height:120px"></div>
+  </ng-container>
+</ion-content>
+
+<div class="pay-footer">
+  <ion-button class="btn-ember pay-btn" expand="block" (click)="pay()">
+    <div class="pay-content">
+      <span class="pay-label">Pagar</span>
+      <span class="pay-amount font-serif">{{ total | currency:'EUR' }}</span>
+    </div>
+  </ion-button>
+</div>

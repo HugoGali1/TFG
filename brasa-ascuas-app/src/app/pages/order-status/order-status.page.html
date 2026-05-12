@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/menu"></ion-back-button></ion-buttons>
+    <ion-title class="font-serif">Estado del pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="orders-list" *ngIf="orders.length > 0; else noOrders">
+    <div *ngFor="let order of orders" class="order-block">
+      <div class="order-header">
+        <span class="round-badge font-serif">Ronda {{ order.roundNumber }}</span>
+        <span class="order-status-chip" [ngClass]="statusColor(order.status)">{{ statusLabel(order.status) }}</span>
+      </div>
+      <div *ngFor="let item of order.items; let i = index" class="order-item card">
+        <div class="oi-info">
+          <span class="oi-name font-serif">{{ item.name }}</span>
+          <span *ngIf="item.cookingLevel" class="oi-level">{{ item.cookingLevel }}</span>
+          <span class="oi-qty">× {{ item.quantity }}</span>
+        </div>
+        <span class="oi-status" [ngClass]="statusColor(item.status)">{{ statusLabel(item.status, item) }}</span>
+      </div>
+      <div *ngIf="order.generalNotes" class="order-notes">📝 {{ order.generalNotes }}</div>
+    </div>
+  </div>
+
+  <ng-template #noOrders>
+    <div class="empty-state">
+      <p>No hay pedidos activos</p>
+      <ion-button fill="clear" (click)="orderMore()">Pedir ahora</ion-button>
+    </div>
+  </ng-template>
+
+  <div style="height:100px"></div>
+</ion-content>
+
+<div class="more-btn-footer">
+  <ion-button class="btn-ember" expand="block" (click)="orderMore()">
+    <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+    Pedir más platos
+  </ion-button>
+</div>

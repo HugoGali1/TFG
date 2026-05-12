@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/menu"></ion-back-button></ion-buttons>
+    <ion-title class="font-serif">Lo que habéis pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="summary-card dark-card" *ngIf="(session$ | async) as session">
+    <div class="summary-row">
+      <div>
+        <div class="summary-label">Acumulado</div>
+        <div class="summary-dishes font-serif">{{ totalPlatos }} platos</div>
+        <div class="summary-meta">{{ orders.length }} rondas · {{ session.partySize }} personas</div>
+      </div>
+      <div class="summary-total">
+        <div class="summary-label">Total</div>
+        <div class="summary-amount font-serif">{{ totalAmount | currency:'EUR' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounds-list">
+    <div *ngFor="let order of (orders | slice:0:orders.length) | reverse" class="round-block">
+      <div class="round-header">
+        <span class="round-badge font-serif">Ronda {{ order.roundNumber }}</span>
+        <span class="round-time">{{ order.sentAt | date:'HH:mm' }}</span>
+        <span class="round-total" *ngIf="order.totalAmount > 0">{{ order.totalAmount | currency:'EUR' }}</span>
+        <span class="round-status" [ngClass]="statusColor(order.status)">{{ statusLabel(order.status) }}</span>
+      </div>
+      <div *ngFor="let item of order.items" class="round-item">
+        <div class="ri-info">
+          <span class="ri-name">{{ item.name }}</span>
+          <span class="ri-qty">× {{ item.quantity }}</span>
+        </div>
+        <span class="ri-status" [ngClass]="statusColor(item.status)">{{ statusLabel(item.status, item) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:100px"></div>
+</ion-content>
+
+<div class="pay-footer">
+  <ion-button class="btn-ember" expand="block" (click)="goPay()">
+    <ion-icon slot="start" name="card-outline"></ion-icon>
+    Pedir la cuenta
+  </ion-button>
+</div>

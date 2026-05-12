@@ -1,0 +1,51 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title class="font-serif">{{ 'cb.experience' | t }}</ion-title>
+    <ion-buttons slot="end">
+      <button class="lang-toggle-mini" (click)="lang.toggle()" [attr.aria-label]="'Switch language'">
+        <img [src]="lang.toggleFlagSrc" alt="" class="flag-img">
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="cb-content">
+  <div class="cb-intro">
+    <div class="cb-meta" *ngIf="sessionService.current as s">
+      {{ 'menu.table' | t }} {{ s.table?.number }} · {{ s.partySize }} {{ s.partySize === 1 ? ('common.person' | t) : ('common.persons' | t) }}
+    </div>
+    <h1 class="font-serif">{{ 'cb.title' | t }}</h1>
+    <p class="cb-tagline">{{ 'cb.subtitle' | t }}</p>
+  </div>
+
+  <div class="buffet-list">
+    <div
+      *ngFor="let b of buffets"
+      class="buffet-card"
+      [class.selected]="selected === b._id"
+      (click)="selected = b._id"
+    >
+      <div class="bc-icon">{{ b.icon }}</div>
+      <div class="bc-body">
+        <div class="bc-name font-serif">{{ b | tField:'name' }}</div>
+        <div class="bc-desc">{{ b | tField:'description' }}</div>
+        <div class="bc-cats">{{ catList(b) }}</div>
+      </div>
+      <div class="bc-price">
+        <div class="bc-pp">{{ b.pricePerPerson | currency:'EUR' }}<span>{{ 'cb.per_person' | t }}</span></div>
+        <div class="bc-total" *ngIf="(sessionService.current?.partySize ?? 0) > 1">
+          {{ 'cb.total' | t }}: {{ totalFor(b) | currency:'EUR' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:120px"></div>
+</ion-content>
+
+<div class="cb-footer">
+  <ion-button class="btn-ember" expand="block" [disabled]="!selected" (click)="confirm()">
+    <span>{{ 'cb.start' | t }}</span>
+  </ion-button>
+  <p class="cb-fineprint">{{ 'cb.fineprint' | t }}</p>
+</div>
