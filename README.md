@@ -350,4 +350,10 @@ Proyecto de Trabajo Fin de Grado. Código compartido con fines educativos y de p
 
 ## 👤 Autor
 
-Desarrollado como proyecto final del Grado en Ingeniería Informática. Foco puesto en arquitectura próxima a producción, UX en tiempo real y separación limpia de responsabilidades por rol.
+**Hugo Galiana Real** — Desarrollador full-stack, Valencia (España).
+
+Trabajo Fin de Grado del **Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)** en el Centro de FP Progresa. Foco puesto en arquitectura próxima a producción, UX en tiempo real y separación limpia de responsabilidades por rol.
+
+- 🌐 [Portfolio](https://hugogaliana-dev.vercel.app)
+- 💼 [LinkedIn](https://www.linkedin.com/in/hugo-galiana-real-8a1831329/)
+- ✉️ [hgalianareal@gmail.com](mailto:hgalianareal@gmail.com)
