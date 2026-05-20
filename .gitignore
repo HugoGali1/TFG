@@ -101,3 +101,6 @@ Brasa-Ascuas-app.html
 
 # Accesos directos de Windows
 *.lnk
+
+# Claude Code local settings
+.claude/
