@@ -26,14 +26,16 @@
         <span class="round-badge font-serif">Ronda {{ order.roundNumber }}</span>
         <span class="round-time">{{ order.sentAt | date:'HH:mm' }}</span>
         <span class="round-total" *ngIf="order.totalAmount > 0">{{ order.totalAmount | currency:'EUR' }}</span>
-        <span class="round-status" [ngClass]="statusColor(order.status)">{{ statusLabel(order.status) }}</span>
       </div>
       <div *ngFor="let item of order.items" class="round-item">
         <div class="ri-info">
           <span class="ri-name">{{ item.name }}</span>
           <span class="ri-qty">× {{ item.quantity }}</span>
         </div>
-        <span class="ri-status" [ngClass]="statusColor(item.status)">{{ statusLabel(item.status, item) }}</span>
+        <div class="ri-right">
+          <span *ngIf="item.coveredByBuffet" class="incluido-pill-sm">Incluido</span>
+          <span *ngIf="!item.coveredByBuffet && itemPrice(item) > 0" class="ri-price">{{ itemPrice(item) | currency:'EUR' }}</span>
+        </div>
       </div>
     </div>
   </div>

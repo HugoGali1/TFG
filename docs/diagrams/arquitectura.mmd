@@ -1,0 +1,15 @@
+flowchart TB
+    subgraph FE["Frontend Ionic 8 + Angular 20 (SPA única)"]
+        direction LR
+        CLI["Cliente<br/>/t/:qrCode"]
+        COC["Cocina<br/>/kitchen"]
+        ADM["Admin<br/>/admin"]
+    end
+
+    BE["Backend NestJS 11<br/>API REST + WebSocket<br/>AuthN/AuthZ · Validación · Lógica de negocio · Pub/Sub WS"]
+    DB[("MongoDB 7<br/>Mongoose ODM")]
+
+    CLI -- "HTTP REST + Socket.io" --> BE
+    COC -- "HTTP REST + Socket.io" --> BE
+    ADM -- "HTTP REST + Socket.io" --> BE
+    BE --> DB

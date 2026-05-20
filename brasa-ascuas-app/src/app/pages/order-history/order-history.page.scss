@@ -20,7 +20,10 @@
 .ri-info { display: flex; align-items: baseline; gap: 6px; min-width: 0; flex: 1; }
 .ri-name { color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ri-qty { color: var(--ink-4); font-size: 12px; flex-shrink: 0; }
-.ri-status { font-size: 10px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; flex-shrink: 0; margin-left: 8px;
+.ri-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ri-price { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+.incluido-pill-sm { display: inline-block; padding: 3px 9px; border-radius: 999px; background: rgba(91, 122, 58, .12); color: var(--leaf); font-size: 10.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; }
+.ri-status { font-size: 10px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; flex-shrink: 0;
   &.gold  { background: rgba(200,155,74,.12);  color: #b08226; }
   &.red   { background: rgba(217,74,31,.12);   color: var(--ember); }
   &.green { background: rgba(91,122,58,.12);   color: var(--leaf); }

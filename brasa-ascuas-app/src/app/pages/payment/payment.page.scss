@@ -52,6 +52,35 @@
   }
 }
 
+.receipt-items {
+  margin-bottom: 4px;
+}
+
+.item-row {
+  padding: 5px 0;
+}
+
+.item-name {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.item-cooking {
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+.item-buffet {
+  font-size: 11px;
+  color: var(--ink-4);
+  font-style: italic;
+}
+
+.receipt-divider {
+  border-top: 1px dashed var(--bg-2);
+  margin: 10px 0;
+}
+
 .receipt-total {
   display: flex;
   justify-content: space-between;

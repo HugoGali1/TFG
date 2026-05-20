@@ -1,0 +1,98 @@
+erDiagram
+    USERS {
+        string email
+        string password
+        string role
+    }
+    TABLES {
+        int number
+        string zone
+        int capacity
+        string status
+        string qrCode
+    }
+    BUFFETS {
+        string name
+        number pricePerPerson
+        array includedCategories
+    }
+    CATEGORIES {
+        string name
+        string nameEn
+        string icon
+        int order
+    }
+    MENU_ITEMS {
+        string name
+        string nameEn
+        string description
+        ObjectId category_FK
+        number price
+        int cookingTime
+        bool isGrilled
+        array cookingLevels
+        string imageUrl
+        bool isAvailable
+    }
+    SESSIONS {
+        ObjectId table_FK
+        ObjectId buffet_FK
+        int partySize
+        string status
+        number totalAmount
+        string token
+        int roundCount
+    }
+    ORDERS {
+        ObjectId session_FK
+        ObjectId table_FK
+        int roundNumber
+        string status
+        number totalAmount
+        date sentAt
+    }
+    ORDER_ITEMS {
+        ObjectId menuItem_ref
+        string name
+        int quantity
+        string cookingLevel
+        string status
+        number unitPrice
+        number linePrice
+        bool coveredByBuffet
+    }
+    PAYMENTS {
+        ObjectId session_FK
+        ObjectId table_FK
+        number subtotal
+        number tip
+        number total
+        string status
+        string method
+        date paidAt
+    }
+    FEEDBACK {
+        ObjectId session_FK
+        ObjectId table_FK
+        int rating
+        string comment
+    }
+    WAITER_REQUESTS {
+        ObjectId table_FK
+        ObjectId session_FK
+        string type
+        string message
+        string status
+    }
+
+    TABLES   ||--o{ SESSIONS        : "abre"
+    BUFFETS  ||--o{ SESSIONS        : "tarifa elegida"
+    BUFFETS  }o--o{ CATEGORIES      : "incluye"
+    CATEGORIES ||--o{ MENU_ITEMS    : "agrupa"
+    SESSIONS ||--o{ ORDERS          : "contiene rondas"
+    ORDERS   ||--|{ ORDER_ITEMS     : "embebe"
+    MENU_ITEMS ||--o{ ORDER_ITEMS   : "referencia"
+    SESSIONS ||--o| PAYMENTS        : "se cobra con"
+    SESSIONS ||--o| FEEDBACK        : "deja valoración"
+    TABLES   ||--o{ WAITER_REQUESTS : "solicita ayuda"
+    SESSIONS ||--o{ WAITER_REQUESTS : "asociada a"

@@ -55,10 +55,14 @@ export class CartPage {
     if (this.cartService.items.length === 0) return;
     const loader = await this.loading.create({ message: 'Enviando a cocina…' });
     await loader.present();
+    const token = this.sessionService.current?.token;
     this.orderService.createOrder(sessionId, this.cartService.items, this.generalNotes || undefined).subscribe({
       next: (order) => {
         loader.dismiss();
         this.cartService.clear();
+        if (token) {
+          this.sessionService.loadByToken(token).subscribe();
+        }
         this.router.navigate(['/order-confirmation'], { state: { order } });
       },
       error: () => loader.dismiss(),

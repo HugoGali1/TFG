@@ -142,7 +142,7 @@ export class AdminPage implements OnInit, OnDestroy {
 
   private loadMenu() {
     this.api.get<Category[]>('/menu/categories').subscribe(c => this.categories = c.sort((a, b) => a.order - b.order));
-    this.api.get<MenuItem[]>('/menu/items').subscribe(i => this.items = i);
+    this.api.get<MenuItem[]>('/menu/items', { all: 'true' }).subscribe(i => this.items = i);
   }
 
   get filteredItems(): MenuItem[] {

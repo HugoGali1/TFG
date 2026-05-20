@@ -40,8 +40,9 @@ export class MenuService {
     isGlutenFree?: boolean;
     isSpicy?: boolean;
     search?: string;
+    includeAll?: boolean;
   }): Promise<MenuItemDocument[]> {
-    const query: Record<string, unknown> = { isAvailable: true };
+    const query: Record<string, unknown> = filters?.includeAll ? {} : { isAvailable: true };
 
     if (filters?.categoryId) query.category = filters.categoryId;
     if (filters?.isVegetarian) query.isVegetarian = true;

@@ -1,0 +1,13 @@
+flowchart TD
+    L([Login como cocina]) --> K["/kitchen — Listado de pedidos"]
+    WS{{🔔 WebSocket: nuevos pedidos en tiempo real}} -.-> K
+    K --> ST[Por cada plato — avanzar estado]
+    ST --> S1[Recibido]
+    S1 --> S2{Tipo de plato}
+    S2 -- A la brasa --> B1[En brasa]
+    S2 -- Otros --> B2[Cocinando]
+    S2 -- Bebidas --> B3[Servir]
+    B1 --> R[Listo]
+    B2 --> R
+    R --> SV([Servido])
+    B3 --> SV

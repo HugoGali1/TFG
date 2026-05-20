@@ -1,0 +1,17 @@
+flowchart TD
+    QR([Cliente escanea QR pegado en la mesa])
+    QR --> T["/t/:qrCode"]
+    T --> Q{¿Mesa libre?}
+    Q -- Sí --> P[Pide nº de personas y crea sesión]
+    Q -- No, ocupada --> R[Reanuda sesión existente]
+    P --> W["/welcome — Empezar a pedir"]
+    R --> W
+    W --> CB["/choose-buffet — Elige tarifa"]
+    CB --> M["/menu — Carta con platos incluidos"]
+    M --> DD["/dish-detail/:id — Punto cocción y notas"]
+    DD --> C["/cart — Revisar y enviar"]
+    C --> OC["/order-confirmation — Pedido en marcha"]
+    OC -- Pedir más platos --> M
+    OC --> OS["/order-status — Estado en directo"]
+    OS --> PAY["/payment — Propina y método"]
+    PAY --> PS(["/payment-success — Valoración y cierre"])

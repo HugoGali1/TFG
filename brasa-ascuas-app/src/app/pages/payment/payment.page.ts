@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { PaymentService } from '../../services/payment';
 import { SessionService } from '../../services/session';
 import { SocketService } from '../../services/socket';
+import { ApiService } from '../../services/api';
 import { LoadingController } from '@ionic/angular';
+import { Order, OrderItem } from '../../models';
 
 @Component({ standalone: false, selector: 'app-payment', templateUrl: './payment.page.html', styleUrls: ['./payment.page.scss'] })
 export class PaymentPage implements OnInit {
@@ -11,6 +13,7 @@ export class PaymentPage implements OnInit {
   tipPercent = 0;
   selectedMethod = 'card';
   receiptEmail = '';
+  orders: Order[] = [];
 
   tipOptions = [
     { label: 'Sin propina', value: 0 },
@@ -29,6 +32,7 @@ export class PaymentPage implements OnInit {
     public sessionService: SessionService,
     private paymentService: PaymentService,
     private socket: SocketService,
+    private api: ApiService,
     private router: Router,
     private loading: LoadingController,
   ) {}
@@ -36,10 +40,30 @@ export class PaymentPage implements OnInit {
   ngOnInit() {
     const sessionId = this.sessionService.sessionId;
     if (sessionId) {
+      this.api.get<Order[]>(`/orders/session/${sessionId}`).subscribe(orders => {
+        this.orders = orders;
+      });
       this.socket.on('payment-confirmed').subscribe(() => {
         this.router.navigateByUrl('/payment-success');
       });
     }
+  }
+
+  get allItems(): OrderItem[] {
+    const map = new Map<string, OrderItem>();
+    for (const order of this.orders) {
+      for (const item of order.items) {
+        const key = `${item.name}-${item.cookingLevel ?? ''}-${item.coveredByBuffet}`;
+        if (map.has(key)) {
+          const existing = map.get(key)!;
+          existing.quantity += item.quantity;
+          existing.linePrice = (existing.linePrice ?? 0) + (item.linePrice ?? 0);
+        } else {
+          map.set(key, { ...item });
+        }
+      }
+    }
+    return Array.from(map.values());
   }
 
   get subtotal() { return this.sessionService.current?.totalAmount ?? 0; }

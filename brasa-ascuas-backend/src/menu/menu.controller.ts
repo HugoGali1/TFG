@@ -67,12 +67,14 @@ export class MenuController {
   @ApiQuery({ name: 'isGlutenFree', required: false, type: Boolean })
   @ApiQuery({ name: 'isSpicy', required: false, type: Boolean })
   @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'all', required: false, type: Boolean, description: 'Admin: incluir platos no disponibles' })
   findAllItems(
     @Query('categoryId') categoryId?: string,
     @Query('isVegetarian') isVegetarian?: string,
     @Query('isGlutenFree') isGlutenFree?: string,
     @Query('isSpicy') isSpicy?: string,
     @Query('search') search?: string,
+    @Query('all') all?: string,
   ) {
     return this.menuService.findAllItems({
       categoryId,
@@ -80,6 +82,7 @@ export class MenuController {
       isGlutenFree: isGlutenFree === 'true',
       isSpicy: isSpicy === 'true',
       search,
+      includeAll: all === 'true',
     });
   }
 
