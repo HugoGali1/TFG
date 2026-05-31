@@ -1,0 +1,13 @@
+{
+  "name": "brasa-ascuas",
+  "private": true,
+  "scripts": {
+    "install:all": "cd brasa-ascuas-backend && npm install && cd ../brasa-ascuas-app && npm install",
+    "dev": "concurrently -n back,front -c bgBlue.white,bgGreen.black \"npm run dev:back\" \"npm run dev:front\"",
+    "dev:back": "cd brasa-ascuas-backend && npm run start:dev",
+    "dev:front": "cd brasa-ascuas-app && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
