@@ -1,0 +1,37 @@
+# Blueprint de Render para la demo pública de Buffet Staff.
+#
+# Un único servicio web: el proceso Node sirve la API (NestJS + socket.io) y el
+# build de la app Ionic desde el mismo origen, así que las comandas en tiempo
+# real viajan por el mismo host y no hace falta CORS ni un segundo servicio.
+#
+# La base de datos es un MongoDB Atlas externo: MONGODB_URI se rellena a mano en
+# el dashboard (sync: false) para no dejar credenciales en el repositorio.
+services:
+  - type: web
+    name: buffet-staff
+    runtime: node
+    plan: free
+    region: frankfurt
+    # --include=dev es obligatorio: Render fija NODE_ENV=production y sin esto
+    # npm se saltaría @angular/cli y @nestjs/cli, que son los que compilan.
+    buildCommand: >-
+      cd brasa-ascuas-backend && npm ci --include=dev && npm run build &&
+      cd ../brasa-ascuas-app && npm ci --include=dev && npx ng build --configuration production
+    # El seed es idempotente: en el primer arranque crea usuarios, mesas, carta y
+    # buffets; en los siguientes no toca nada. Va con ';' y no con '&&' para que
+    # un fallo del seed no impida arrancar el servidor.
+    startCommand: node brasa-ascuas-backend/dist/seed.js; node brasa-ascuas-backend/dist/main.js
+    healthCheckPath: /api/docs
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Cadena de conexión de Atlas. Se define en el dashboard de Render.
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      # Ruta del build de la app, relativa a la raíz del repositorio.
+      - key: STATIC_DIR
+        value: brasa-ascuas-app/www
