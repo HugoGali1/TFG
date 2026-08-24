@@ -6,13 +6,9 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000/api',
   wsUrl: 'http://localhost:3000',
-};
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+  // Pon la clave publicable de Stripe (pk_test_...) para cobrar de verdad.
+  // Si se deja vacía, la pantalla de pago cae automáticamente en la
+  // simulacion de /payments/simulate, para poder hacer la demo sin claves.
+  stripePublishableKey: '',
+};

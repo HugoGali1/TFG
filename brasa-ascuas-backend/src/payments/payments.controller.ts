@@ -17,6 +17,12 @@ import type { Request } from 'express';
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
+  @Get('config')
+  @ApiOperation({ summary: 'Indica si el servidor tiene Stripe configurado' })
+  config() {
+    return { stripeEnabled: this.paymentsService.isStripeEnabled };
+  }
+
   @Post('create-intent')
   @ApiOperation({ summary: 'Crear PaymentIntent de Stripe y registrar pago pendiente' })
   createIntent(@Body() dto: CreatePaymentIntentDto) {
@@ -36,6 +42,14 @@ export class PaymentsController {
     @Req() req: Request & { rawBody?: Buffer },
   ) {
     return this.paymentsService.handleWebhook(signature, req.rawBody as Buffer);
+  }
+
+  @Post(':id/sync')
+  @ApiOperation({
+    summary: 'Reconciliar un pago con Stripe (respaldo cuando no hay webhook)',
+  })
+  sync(@Param('id') id: string) {
+    return this.paymentsService.syncFromStripe(id);
   }
 
   @Get('session/:sessionId')

@@ -34,7 +34,7 @@ Trabajo de Fin de Grado (TFG) que presenta una arquitectura próxima a producci�
 - **Interfaz bilingüe** (español / inglés) con preferencia persistente y traducción de campos en tiempo de ejecución (`name` ↔ `nameEn`)
 - **Punto de cocción** (poco / medio / al punto / hecho) solo para platos a la brasa
 - **Las bebidas saltan estados intermedios** (recibido → servido directo), modelado en el flujo de cocina
-- **Propina + simulación de pago** con UX por método (Tarjeta / Apple Pay / Bizum)
+- **Propina + pago con Stripe** mediante Payment Element (tarjeta, Apple/Google Pay, Bizum), con pago simulado como alternativa si no hay claves
 - **Valoración tras pagar** con comentario opcional, persistida en la colección de feedback
 
 ### Cocina
@@ -68,7 +68,7 @@ Trabajo de Fin de Grado (TFG) que presenta una arquitectura próxima a producci�
 | BBDD         | **MongoDB** vía Mongoose              | Esquemas flexibles (encajan bien con menú y buffets), agregaciones para estadísticas |
 | Tiempo real  | **Socket.io**                         | Pub/sub cliente ↔ cocina mediante salas, consciente de reconexiones |
 | Auth         | **JWT + Passport**                    | Stateless, control de acceso por rol |
-| Pagos        | **Stripe SDK** (mantenido) + **simulado** | Vía Stripe está cableada pero un endpoint `simulate` evita la dependencia externa para la demo |
+| Pagos        | **Stripe** (Payment Element + webhook) | Cobro real sin salir de la app; un endpoint `simulate` cubre la demo cuando no hay claves |
 | Tests        | **Jest**                              | Unit + integración, opción por defecto en NestJS |
 | Docs API     | **Swagger** en `/api/docs`            | Generadas automáticamente desde decoradores |
 
@@ -132,6 +132,35 @@ cd brasa-ascuas-app
 npm install
 npm start                         # http://localhost:4200
 ```
+
+### Stripe (opcional)
+
+**Sin configurar nada, la app funciona**: el pago cae en el simulador y la mesa se libera igual. Para cobrar de verdad en modo test:
+
+1. **Claves.** En [dashboard.stripe.com/test/apikeys](https://dashboard.stripe.com/test/apikeys):
+
+   ```bash
+   # brasa-ascuas-backend/.env
+   STRIPE_SECRET_KEY=sk_test_...
+   ```
+   ```ts
+   // brasa-ascuas-app/src/environments/environment.ts
+   stripePublishableKey: 'pk_test_...',
+   ```
+
+2. **Métodos de pago.** Actívalos en *Settings → Payment methods*. El Payment Element muestra solo los que estén habilitados para EUR (Bizum requiere activarlo explícitamente).
+
+3. **Webhook en local.** Sin esto el pago se cierra igual gracias a `POST /payments/:id/sync`, pero conviene probar la vía real:
+
+   ```bash
+   stripe login
+   stripe listen --forward-to localhost:3000/api/payments/webhook
+   # copia el whsec_... que imprime a STRIPE_WEBHOOK_SECRET en .env y reinicia el backend
+   ```
+
+4. **Tarjetas de prueba.** `4242 4242 4242 4242` (éxito), `4000 0025 0000 3155` (pide 3DS), `4000 0000 0000 9995` (fondos insuficientes). Fecha futura y CVC cualquiera.
+
+> Comprueba con `GET /api/payments/config` si el backend ha detectado la clave (`{"stripeEnabled":true}`).
 
 ### Tests
 ```bash
@@ -211,8 +240,21 @@ Cada mesa tiene **un único QR inmutable** impreso una sola vez. Al escanearlo:
 ### Aislamiento de roles entre pestañas
 Almacenar el JWT en `localStorage` (compartido entre pestañas) entra en conflicto con el caso de uso de **abrir admin en una pestaña y cocina en otra**. En lugar de refactorizar el modelo de auth, el panel admin **se reautentica silenciosamente como admin** en el evento `visibilitychange` y antes de cada acción de escritura, garantizando que se usa el token correcto. Está documentado como compromiso conocido; el refactor a `sessionStorage` está en el roadmap.
 
-### Stripe cableado, simulador por defecto
-La integración con Stripe (`PaymentIntent`, manejo de webhook) está completa pero **deliberadamente no es el flujo por defecto**. Un endpoint `POST /payments/simulate` cortocircuita la pasarela, marca el pago como `succeeded`, libera la mesa y emite el evento `payment-confirmed`. Pasar a Stripe real en producción solo requiere cambiar a qué endpoint llama el frontend.
+### Stripe real, con simulador como red de seguridad
+La pantalla de pago integra el **Payment Element** de Stripe: en cuanto hay clave publicable en `environment.ts`, el cliente paga de verdad sin salir de la app, y Stripe ofrece los métodos activados en la cuenta (tarjeta, Apple/Google Pay, Bizum) en lugar de un selector escrito a mano.
+
+Se usa el flujo de **deferred intent**: el Element se monta con el importe pero sin `client_secret`, así cambiar la propina no crea un `PaymentIntent` en cada pulsación — el intent se crea (o se actualiza, si ya había uno pendiente) al pulsar *Pagar*.
+
+La confirmación viaja por dos caminos complementarios, porque ninguno basta por sí solo:
+
+| Camino | Cuándo actúa | Por qué hace falta |
+|---|---|---|
+| **Webhook** `payment_intent.succeeded` | Siempre, en producción | Única vía fiable si el cliente cierra el navegador (p. ej. Bizum que confirma tarde) |
+| **`POST /payments/:id/sync`** | Tras confirmar en el front | En local no hay webhook salvo que se ejecute `stripe listen`; sin esto la mesa se quedaría ocupada |
+
+Ambos convergen en la misma operación, que es **idempotente** (el `findOneAndUpdate` filtra por `status != succeeded`): da igual quién llegue primero, la sesión se cierra y el evento `payment-confirmed` se emite una sola vez.
+
+Si no hay clave configurada, la app **cae automáticamente** en `POST /payments/simulate`, que marca el pago como `succeeded` sin tocar Stripe. Así la demo del TFG funciona sin claves ni conexión, y el backend arranca igualmente (registra un aviso en el log en vez de romper).
 
 ### Campana real con fallback a la política de autoplay
 La cocina reproduce un `.mp3` real al entrar un pedido. Si el navegador bloquea el autoplay (porque el usuario aún no ha interactuado), el flash visual y el aviso en el título de la pestaña siguen funcionando — degradación elegante.
@@ -228,7 +270,7 @@ La app usa Socket.io con **salas con nombre** en lugar de hacer broadcast a todo
 | `new-order`          | `OrdersService.create`              | `kitchen` + `waiters`  | Panel cocina: campana + flash                |
 | `order-received`     | `OrdersService.create`              | `session:<sessionId>`  | Cliente: confirma pedido enviado             |
 | `order-updated`      | `OrdersService.updateItemStatus`    | `session:<sid>` + `kit`| Cliente: toast al pasar a `ready`            |
-| `payment-confirmed`  | `PaymentsService.simulate/success`  | `session:<sid>`        | Cliente: redirige a `/payment-success`       |
+| `payment-confirmed`  | `PaymentsService.markSucceeded/simulate` | `session:<sid>`   | Cliente: redirige a `/payment-success`       |
 | `waiter-request`     | `WaiterRequestsService.create`      | `waiters`              | Panel cocina: actualiza badge                |
 
 Un `SocketService` propio en el cliente recuerda **qué salas se han unido** y reemite `join-session` / `join-kitchen` en cada reconexión. Así el cliente no se pierde notificaciones después de que el navegador throttle la pestaña, el dispositivo se duerma o haya un parpadeo de red — escenarios típicos en un restaurante.

@@ -55,7 +55,7 @@
           *ngFor="let opt of tipOptions"
           class="tip-btn"
           [class.selected]="tipPercent === opt.value"
-          (click)="tipPercent = opt.value"
+          (click)="selectTip(opt.value)"
         >
           <span class="tip-label">{{ opt.label }}</span>
           <span class="tip-amount" *ngIf="opt.value > 0">{{ (subtotal * opt.value / 100) | currency:'EUR' }}</span>
@@ -65,13 +65,30 @@
 
     <div class="section-block">
       <div class="section-label">Método de pago</div>
-      <div class="method-list">
-        <div *ngFor="let m of methods" class="method-row" [class.selected]="selectedMethod === m.id" (click)="selectedMethod = m.id">
-          <ion-icon [name]="m.icon"></ion-icon>
-          <span>{{ m.label }}</span>
-          <div class="method-radio" [class.checked]="selectedMethod === m.id"></div>
+
+      <!-- Stripe: el Payment Element ofrece los métodos activados en la cuenta -->
+      <ng-container *ngIf="useStripe">
+        <div class="section-hint">Pago seguro procesado por Stripe</div>
+        <div class="stripe-host">
+          <div id="stripe-payment-element"></div>
+          <div class="stripe-loading" *ngIf="!stripeReady">
+            <ion-spinner name="crescent"></ion-spinner>
+            <span>Cargando métodos de pago…</span>
+          </div>
         </div>
-      </div>
+      </ng-container>
+
+      <!-- Demo sin claves de Stripe -->
+      <ng-container *ngIf="!useStripe">
+        <div class="section-hint" *ngIf="stripeFailed">Stripe no disponible — pago simulado</div>
+        <div class="method-list">
+          <div *ngFor="let m of methods" class="method-row" [class.selected]="selectedMethod === m.id" (click)="selectedMethod = m.id">
+            <ion-icon [name]="m.icon"></ion-icon>
+            <span>{{ m.label }}</span>
+            <div class="method-radio" [class.checked]="selectedMethod === m.id"></div>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
     <div class="section-block">
@@ -85,7 +102,7 @@
 </ion-content>
 
 <div class="pay-footer">
-  <ion-button class="btn-ember pay-btn" expand="block" (click)="pay()">
+  <ion-button class="btn-ember pay-btn" expand="block" [disabled]="paying || (useStripe && !stripeReady)" (click)="pay()">
     <div class="pay-content">
       <span class="pay-label">Pagar</span>
       <span class="pay-amount font-serif">{{ total | currency:'EUR' }}</span>
