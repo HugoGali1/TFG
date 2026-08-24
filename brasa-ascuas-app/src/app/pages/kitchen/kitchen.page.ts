@@ -111,7 +111,7 @@ export class KitchenPage implements OnInit, OnDestroy {
   private flashTitleIfHidden() {
     if (!document.hidden) return;
     const original = document.title;
-    document.title = '🔔 Pedido nuevo · Brasa & Ascuas';
+    document.title = '🔔 Pedido nuevo · Brasa y Ascuas';
     const reset = () => {
       document.title = original;
       document.removeEventListener('visibilitychange', reset);
