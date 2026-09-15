@@ -1,10 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { SocketService } from './services/socket';
 import { SessionService } from './services/session';
 import { Order } from './models';
+
+/**
+ * Rutas del flujo de cliente, el que se usa desde el movil en la mesa. En
+ * pantalla grande se encuadran con ancho de telefono (.phone-frame en
+ * global.scss) para que se vean como se ven de verdad. Cocina, admin, login y
+ * la demo quedan fuera: esas si estan pensadas para pantalla grande.
+ */
+const CLIENT_ROUTES = new Set([
+  'mesa', 't', 'welcome', 'choose-buffet', 'menu', 'dish-detail', 'cart',
+  'order-confirmation', 'order-status', 'order-history', 'call-waiter',
+  'payment', 'payment-success',
+]);
 
 @Component({
   selector: 'app-root',
@@ -26,6 +38,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
 
   ngOnInit() {
+    this.applyPhoneFrame(this.router.url);
+    this.subs.push(
+      this.router.events
+        .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+        .subscribe(e => this.applyPhoneFrame(e.urlAfterRedirects)),
+    );
+
     // Garantiza que el cliente esté en la sala de su sesión incluso si recarga
     // directo en /menu o /cart (saltándose welcome).
     this.subs.push(
@@ -45,6 +64,12 @@ export class AppComponent implements OnInit, OnDestroy {
         this.detectReadyTransitions(order);
       }),
     );
+  }
+
+  /** Marca el body cuando la ruta activa pertenece al flujo de cliente. */
+  private applyPhoneFrame(url: string) {
+    const segment = url.split('?')[0].split('#')[0].split('/').filter(Boolean)[0] ?? '';
+    document.body.classList.toggle('phone-frame', CLIENT_ROUTES.has(segment));
   }
 
   private detectReadyTransitions(order: Order) {

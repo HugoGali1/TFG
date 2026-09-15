@@ -181,3 +181,34 @@ ion-back-button { --color: var(--ink); }
 
 /* Kitchen panel */
 .kitchen-theme { --ion-background-color: #0f0d0b; --ion-text-color: #f0ebe3; }
+
+/* ---------------------------------------------------------------------------
+   Marco de telefono para el flujo de cliente en pantalla grande.
+
+   Las paginas del cliente estan hechas para el movil de la mesa. Abiertas en un
+   portatil se estiraban a todo el ancho y no parecian lo que son, que es justo
+   lo que ve quien entra por la demo. Por encima de 768px se encuadran con ancho
+   de telefono sobre un fondo neutro; en el movil real no cambia nada.
+
+   La clase la pone AppComponent segun la ruta activa (CLIENT_ROUTES).
+--------------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+  body.phone-frame {
+    background: #17120f;
+
+    ion-app {
+      width: 100%;
+      max-width: 430px;
+      height: calc(100vh - 56px);
+      max-height: 920px;
+      margin: 28px auto;
+      border-radius: 38px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 10px #0a0807,
+        0 0 0 11px rgba(255, 255, 255, .09),
+        0 24px 60px rgba(0, 0, 0, .55);
+    }
+  }
+}
