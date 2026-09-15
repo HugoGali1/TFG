@@ -10,6 +10,15 @@ export class DevPage implements OnInit, OnDestroy {
   loading = true;
   error = '';
 
+  /** El visitante ha desplegado la lista para elegir mesa el mismo. */
+  pickingTable = false;
+
+  /** Ya ha hecho el paso 1, asi que el 2 deja de ser una sugerencia a ciegas. */
+  hasSeated = false;
+
+  /** Url que el bloqueador de ventanas emergentes ha cortado, para ofrecer un enlace normal. */
+  blockedUrl = '';
+
   constructor(
     private api: ApiService,
     private auth: AuthService,
@@ -53,33 +62,62 @@ export class DevPage implements OnInit, OnDestroy {
     });
   }
 
+  /** La mesa que se propone por defecto: la primera libre, o la primera que haya. */
+  get suggestedTable(): Table | null {
+    return this.tables.find((t) => t.status === 'free') ?? this.tables[0] ?? null;
+  }
+
   statusLabel(s: string): string {
     const m: Record<string, string> = { free: 'Libre', occupied: 'Ocupada', cleaning: 'Por limpiar', reserved: 'Reservada' };
     return m[s] ?? s;
   }
 
-  async openTable(table: Table) {
-    const loader = await this.loadingCtrl.create({ message: 'Reseteando mesa…' });
+  togglePicker() {
+    this.pickingTable = !this.pickingTable;
+  }
+
+  dismissBlocked() {
+    this.blockedUrl = '';
+  }
+
+  /**
+   * Abre en pestana nueva y detecta si el navegador lo ha bloqueado, para poder
+   * ofrecer un enlace normal en vez de no hacer nada en silencio.
+   */
+  private openTab(url: string) {
+    const win = window.open(url, '_blank');
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      this.blockedUrl = url;
+      return;
+    }
+    this.blockedUrl = '';
+  }
+
+  async seat(table: Table | null) {
+    if (!table) return;
+    const loader = await this.loadingCtrl.create({ message: 'Preparando la mesa…' });
     await loader.present();
     await this.loginAdminSilent();
     this.api.post(`/sessions/reset-table/${table._id}`, {}).subscribe({
       next: () => {
         loader.dismiss();
         this.refreshTableLocally(table);
-        window.open(`/t/${table.qrCode}`, '_blank');
+        this.hasSeated = true;
+        this.pickingTable = false;
+        this.openTab(`/t/${table.qrCode}`);
       },
       error: () => loader.dismiss(),
     });
   }
 
   openKitchen() {
-    // /login?auto=cocina autenticará y redirigirá a /kitchen en la nueva pestaña.
-    // La pestaña actual (/dev) sigue con sesión admin para próximas acciones.
-    window.open('/login?auto=cocina', '_blank');
+    // /login?auto=cocina autenticara y redirigira a /kitchen en la nueva pestana.
+    // La pestana actual sigue con sesion admin para proximas acciones.
+    this.openTab('/login?auto=cocina');
   }
 
   openAdmin() {
-    window.open('/login?auto=admin', '_blank');
+    this.openTab('/login?auto=admin');
   }
 
   private refreshTableLocally(table: Table) {

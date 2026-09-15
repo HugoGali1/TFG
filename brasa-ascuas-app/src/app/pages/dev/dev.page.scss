@@ -1,24 +1,53 @@
 .dev-content { --background: var(--bg); }
 
-.dev-intro {
-  padding: 8px 20px 20px;
-
-  h1 {
-    font-size: 32px;
-    font-style: italic;
-    font-weight: 600;
-    color: var(--ink);
-    margin: 0;
-    letter-spacing: -.5px;
-  }
-
-  .dev-tagline {
-    font-size: 13px;
-    color: var(--ink-3);
-    font-style: italic;
-    margin: 4px 0 0;
-  }
+.demo-wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
 }
+
+/* ---------- cabecera ---------- */
+
+.demo-hero {
+  text-align: center;
+  padding: 8px 0 28px;
+}
+
+.demo-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ember);
+  background: rgba(217, 74, 31, .09);
+  border: 1px solid rgba(217, 74, 31, .2);
+  border-radius: 999px;
+  padding: 5px 12px;
+  margin-bottom: 14px;
+}
+
+.brand-name {
+  font-size: 38px;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -.5px;
+  line-height: 1.1;
+
+  .amp { color: var(--ember); }
+}
+
+.demo-lede {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-3);
+  margin: 12px auto 0;
+  max-width: 400px;
+}
+
+/* ---------- estados ---------- */
 
 .dev-loading, .dev-error {
   text-align: center;
@@ -26,86 +55,229 @@
   color: var(--ink-3);
   ion-icon { font-size: 40px; color: var(--ember); margin-bottom: 8px; }
   ion-spinner { --color: var(--ember); width: 32px; height: 32px; }
-}
 
-.dev-section {
-  padding: 0 16px 18px;
-
-  .dev-section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    padding: 0 4px 8px;
+  .error-hint {
+    font-size: 12.5px;
+    color: var(--ink-4);
+    font-style: italic;
+    margin-top: 6px;
   }
 }
 
-.dev-card {
+/* ---------- aviso de pestana bloqueada ---------- */
+
+.blocked-note {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(200, 155, 74, .12);
+  border: 1.5px solid rgba(200, 155, 74, .4);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--ink);
+
+  ion-icon { font-size: 20px; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+  strong { display: block; font-weight: 600; margin-bottom: 2px; }
+  a { color: var(--ember); font-weight: 600; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  div { flex: 1; min-width: 0; }
+}
+
+.blocked-close {
+  background: none;
+  border: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ink-4);
+  cursor: pointer;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+/* ---------- pasos ---------- */
+
+.steps-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 14px 2px;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  display: flex;
   gap: 14px;
-  padding: 14px 16px;
-  margin-bottom: 8px;
   background: var(--surface);
   border: 1.5px solid var(--bg-2);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: transform .12s, box-shadow .15s, border-color .15s;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 12px;
+  transition: border-color .2s, box-shadow .2s;
 
-  &:active { transform: scale(.99); }
-  &:hover { border-color: rgba(217,74,31,.3); box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  &.highlight {
+    border-color: rgba(217, 74, 31, .45);
+    box-shadow: 0 3px 14px rgba(217, 74, 31, .1);
+  }
 
-  &.kitchen {
-    background: linear-gradient(145deg, #1c1410, #2a201a);
-    border-color: rgba(255,255,255,.08);
-    color: white;
-
-    .card-title { color: white; }
-    .card-meta { color: rgba(255,255,255,.55); }
-    .card-icon { background: rgba(255,255,255,.1); }
-    .card-chev { color: rgba(255,255,255,.4); }
+  &.done .step-num {
+    background: #5b9b3a;
+    color: #fff;
   }
 }
 
-.card-icon {
-  width: 48px;
-  height: 48px;
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 18px; }
+}
+
+.step-body { flex: 1; min-width: 0; }
+
+.step-title {
+  font-size: 19px;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--ink);
+  margin: 2px 0 4px;
+}
+
+.step-text {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+  margin: 0 0 14px;
+}
+
+/* ---------- botones de paso ---------- */
+
+.step-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  background: var(--ember);
+  color: #fff;
+  border: 0;
   border-radius: 12px;
+  padding: 13px 18px;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+
+  &:hover { background: var(--ember-light); }
+  &:active { transform: scale(.985); }
+
+  ion-icon { font-size: 16px; }
+
+  &.secondary {
+    background: var(--ink);
+    &:hover { background: #2a201a; }
+  }
+}
+
+.step-alt {
+  display: block;
+  width: 100%;
+  margin-top: 9px;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--ink-3);
+  cursor: pointer;
+  padding: 4px;
+
+  &:hover { color: var(--ember); }
+}
+
+/* ---------- lista de mesas ---------- */
+
+.table-list {
+  margin-top: 10px;
+  border-top: 1px solid var(--bg-2);
+  padding-top: 10px;
+}
+
+.table-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: 9px 10px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+
+  &:hover {
+    background: var(--bg);
+    border-color: var(--bg-2);
+  }
+}
+
+.table-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: linear-gradient(145deg, var(--bg-2), var(--bg));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--ink);
   flex-shrink: 0;
 }
 
-.card-body {
-  flex: 1;
-  min-width: 0;
+.table-info { flex: 1; min-width: 0; }
 
-  .card-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 2px;
-  }
+.table-name {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
 
-  .card-meta {
-    font-size: 12px;
-    color: var(--ink-3);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+.table-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  margin-top: 1px;
 }
 
 .status-dot {
   width: 8px; height: 8px; border-radius: 50%;
   display: inline-block;
   background: var(--ink-4);
+  flex-shrink: 0;
 
   &.free      { background: #5b9b3a; }
   &.occupied  { background: var(--ember); }
@@ -113,17 +285,31 @@
   &.reserved  { background: #4a90c4; }
 }
 
-.card-chev {
-  font-size: 18px;
+.table-chev {
+  font-size: 17px;
   color: var(--ink-4);
   flex-shrink: 0;
 }
 
-.dev-hint {
-  text-align: center;
-  font-size: 11.5px;
+/* ---------- pie ---------- */
+
+.demo-note {
+  font-size: 12.5px;
+  line-height: 1.6;
   color: var(--ink-4);
+  text-align: center;
+  margin: 22px auto 0;
+  max-width: 420px;
+}
+
+.staff-link {
+  display: block;
+  text-align: center;
+  margin-top: 26px;
+  font-size: 13px;
   font-style: italic;
-  padding: 8px 24px 24px;
-  margin: 0;
+  color: var(--ink-3);
+  text-decoration: none;
+
+  &:hover { color: var(--ember); }
 }

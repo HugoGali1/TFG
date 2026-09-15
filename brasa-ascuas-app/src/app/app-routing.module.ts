@@ -6,9 +6,15 @@ import { adminGuard } from './guards/admin.guard';
 
 const routes: Routes = [
   {
+    // La raiz es la puerta de la demo, no el login del equipo: casi todo el que
+    // llega viene a probar la app, no a fichar. El login queda a un clic.
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'demo',
     pathMatch: 'full'
+  },
+  {
+    path: 'demo',
+    loadChildren: () => import('./pages/dev/dev.module').then( m => m.DevPageModule)
   },
   {
     path: 'mesa/:token',
@@ -78,8 +84,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin/admin.module').then( m => m.AdminPageModule)
   },
   {
+    // La demo vivia aqui; se conserva para no romper enlaces ni el README.
     path: 'dev',
-    loadChildren: () => import('./pages/dev/dev.module').then( m => m.DevPageModule)
+    redirectTo: 'demo',
+    pathMatch: 'full'
   },
 ];
 

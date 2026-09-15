@@ -180,13 +180,20 @@ Tres cuentas creadas por el seed para el lado del staff:
 | Cocina   | `cocina@brasaascuas.es`        | `cocina1234`  |
 | Camarero | `marta@brasaascuas.es`         | `marta1234`   |
 
-Para probar el flujo de cliente sin imprimir QRs físicos, la app expone un **panel de pruebas en `/dev`** con accesos rápidos:
+Para probar el flujo de cliente sin imprimir QRs físicos, **la raíz del sitio (`/`) es
+la demo guiada**, que propone un recorrido en tres pasos:
 
-- **Panel admin** — login automático como administrador
-- **Panel cocina** — login automático como cocina, abre nueva pestaña
-- **Cualquier mesa** — cierra la sesión activa, libera la mesa y abre el flujo del cliente en pestaña nueva
+1. **Siéntate en una mesa** — libera la mesa sugerida (la primera libre) y abre el flujo
+   del cliente. También se puede desplegar la lista y elegir otra.
+2. **Abre la cocina** — login automático como cocina. Una vez hecho el paso 1, el texto
+   cambia para invitar a pedir en la otra pestaña y ver entrar la comanda en tiempo real.
+3. **Abre la administración** — login automático como administrador.
 
-Cada acceso abre en una pestaña nueva, por lo que se pueden probar los tres roles a la vez.
+Cada paso abre una pestaña nueva, por lo que se pueden ver los tres roles a la vez; si el
+navegador bloquea la ventana emergente, la propia página ofrece un enlace normal. El login
+del equipo queda en `/login`, a un clic desde el pie de la demo.
+
+`/dev` redirige a `/demo`, así que los enlaces antiguos siguen funcionando.
 
 ---
 

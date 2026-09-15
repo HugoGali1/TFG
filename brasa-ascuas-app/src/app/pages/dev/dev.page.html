@@ -1,65 +1,113 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-title class="font-serif">Modo demo</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="dev-content" [fullscreen]="true">
+  <div class="demo-wrap">
 
-<ion-content class="dev-content">
-  <div class="dev-intro">
-    <h1 class="font-serif">Atajos de prueba</h1>
-    <p class="dev-tagline">Acceso rápido al panel de cocina y a cualquier mesa.</p>
-  </div>
+    <header class="demo-hero">
+      <span class="demo-badge">Demo interactiva</span>
+      <h1 class="font-serif brand-name">Brasa <span class="amp">&amp;</span> Ascuas</h1>
+      <p class="demo-lede">
+        Los clientes escanean un QR en la mesa, piden y pagan desde el móvil.
+        La comanda aparece al instante en la pantalla de cocina.
+      </p>
+    </header>
 
-  <ng-container *ngIf="loading">
-    <div class="dev-loading">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Cargando…</p>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!loading && error">
-    <div class="dev-error">
-      <ion-icon name="alert-circle-outline"></ion-icon>
-      <p>{{ error }}</p>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!loading && !error">
-    <div class="dev-section">
-      <div class="dev-section-label">Equipo</div>
-      <div class="dev-card kitchen" (click)="openAdmin()">
-        <div class="card-icon">⚙️</div>
-        <div class="card-body">
-          <div class="card-title font-serif">Panel de admin</div>
-          <div class="card-meta">Gestionar mesas, platos y buffets</div>
-        </div>
-        <ion-icon name="chevron-forward-outline" class="card-chev"></ion-icon>
+    <ng-container *ngIf="loading">
+      <div class="dev-loading">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Preparando la demo…</p>
       </div>
-      <div class="dev-card kitchen" (click)="openKitchen()">
-        <div class="card-icon">🧑‍🍳</div>
-        <div class="card-body">
-          <div class="card-title font-serif">Panel de cocina</div>
-          <div class="card-meta">Entrar como Cocina</div>
-        </div>
-        <ion-icon name="chevron-forward-outline" class="card-chev"></ion-icon>
-      </div>
-    </div>
+    </ng-container>
 
-    <div class="dev-section">
-      <div class="dev-section-label">Mesas</div>
-      <div class="dev-card table" *ngFor="let t of tables" (click)="openTable(t)">
-        <div class="card-icon">{{ t.number }}</div>
-        <div class="card-body">
-          <div class="card-title font-serif">Mesa {{ t.number }}</div>
-          <div class="card-meta">
-            <span class="status-dot" [ngClass]="t.status"></span>
-            {{ statusLabel(t.status) }} · {{ t.capacity }} pers. · {{ t.zone }}
+    <ng-container *ngIf="!loading && error">
+      <div class="dev-error">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p>{{ error }}</p>
+        <p class="error-hint">El servidor de la demo puede tardar unos segundos en despertar. Recarga la página en un momento.</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && !error">
+
+      <div class="blocked-note" *ngIf="blockedUrl">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <div>
+          <strong>Tu navegador ha bloqueado la pestaña nueva.</strong>
+          <a [href]="blockedUrl" target="_blank" rel="noopener">Ábrela desde aquí →</a>
+        </div>
+        <button class="blocked-close" type="button" (click)="dismissBlocked()" aria-label="Cerrar aviso">×</button>
+      </div>
+
+      <h2 class="steps-title">Pruébalo en 3 pasos</h2>
+
+      <ol class="steps">
+
+        <li class="step" [class.done]="hasSeated">
+          <div class="step-num"><span *ngIf="!hasSeated">1</span><ion-icon *ngIf="hasSeated" name="checkmark-outline"></ion-icon></div>
+          <div class="step-body">
+            <h3 class="step-title font-serif">Siéntate en una mesa</h3>
+            <p class="step-text">Entras como cliente: carta, pedido y pago desde el móvil.</p>
+
+            <button class="step-cta" type="button" (click)="seat(suggestedTable)" *ngIf="suggestedTable">
+              Sentarme en la mesa {{ suggestedTable.number }}
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+
+            <button class="step-alt" type="button" (click)="togglePicker()">
+              {{ pickingTable ? 'Ocultar las mesas' : 'Prefiero elegir otra mesa' }}
+            </button>
+
+            <div class="table-list" *ngIf="pickingTable">
+              <button class="table-row" type="button" *ngFor="let t of tables" (click)="seat(t)">
+                <span class="table-num">{{ t.number }}</span>
+                <span class="table-info">
+                  <span class="table-name">Mesa {{ t.number }}</span>
+                  <span class="table-meta">
+                    <span class="status-dot" [ngClass]="t.status"></span>
+                    {{ statusLabel(t.status) }} · {{ t.capacity }} pers. · {{ t.zone }}
+                  </span>
+                </span>
+                <ion-icon name="chevron-forward-outline" class="table-chev"></ion-icon>
+              </button>
+            </div>
           </div>
-        </div>
-        <ion-icon name="chevron-forward-outline" class="card-chev"></ion-icon>
-      </div>
-    </div>
+        </li>
 
-    <p class="dev-hint">Al pulsar una mesa se cierra cualquier sesión activa, se libera y se abre el flujo de cliente.</p>
-  </ng-container>
+        <li class="step" [class.highlight]="hasSeated">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3 class="step-title font-serif">Abre la cocina</h3>
+            <p class="step-text">
+              <ng-container *ngIf="hasSeated">Haz un pedido en la otra pestaña y míralo entrar aquí en tiempo real.</ng-container>
+              <ng-container *ngIf="!hasSeated">Deja esta pestaña abierta junto a la del cliente: cada pedido aparece solo, sin recargar.</ng-container>
+            </p>
+            <button class="step-cta secondary" type="button" (click)="openKitchen()">
+              Ver la pantalla de cocina
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+          </div>
+        </li>
+
+        <li class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3 class="step-title font-serif">Curiosea la administración</h3>
+            <p class="step-text">Mesas, platos, categorías y tarifas del buffet, como los gestiona el restaurante.</p>
+            <button class="step-cta secondary" type="button" (click)="openAdmin()">
+              Abrir administración
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </button>
+          </div>
+        </li>
+
+      </ol>
+
+      <p class="demo-note">
+        Cada paso se abre en una pestaña aparte, a propósito: así ves el lado del
+        cliente y el de cocina a la vez. No hace falta registrarse y los pagos son
+        simulados, no se cobra nada.
+      </p>
+
+      <a class="staff-link" routerLink="/login">¿Eres del equipo? Iniciar sesión</a>
+
+    </ng-container>
+  </div>
 </ion-content>
