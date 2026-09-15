@@ -210,5 +210,11 @@ ion-back-button { --color: var(--ink); }
         0 0 0 11px rgba(255, 255, 255, .09),
         0 24px 60px rgba(0, 0, 0, .55);
     }
+
+    /* En un telefono la barra de scroll flota y desaparece; en el escritorio se
+       dibujaba dentro del marco y rompia la ilusion. El contenido se sigue
+       desplazando con la rueda y el trackpad. */
+    ion-content::part(scroll) { scrollbar-width: none; }
+    ion-content::part(scroll)::-webkit-scrollbar { display: none; }
   }
 }
